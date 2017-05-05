@@ -19,9 +19,8 @@ namespace DriverAssist.Models
         public Model()
         {
             Coordinates = new List<Coordinate>();
-            Coordinates.Add(new Coordinate { Lat = 50, Lng = 19 });
-            Coordinates.Add(new Coordinate { Lat = 51, Lng = 19 });
 
+            //DEMO tylko do testow
             String path = HttpContext.Current.Server.MapPath("~/img/gliwice_kato.txt");
             String line;
             try

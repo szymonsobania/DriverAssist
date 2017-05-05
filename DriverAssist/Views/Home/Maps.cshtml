@@ -11,19 +11,6 @@
 
 
 
-@*@foreach (var item in Model)
-{
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Lat)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Lng)
-        </td>
-
-
-    </tr>
-}*@
 
 
 <table id="mytable" class="table">
@@ -37,20 +24,13 @@
     <tbody>
         <tr>
             <th scope="row">1</th>
-            <td>Markaaaaaaaaaaaaabbbbbb</td>
-            <td>Otto</td>
-            <td>mdo</td>
+            <td>test</td>
+            <td>test</td>
         </tr>
         <tr>
             <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>fat</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>twitter</td>
+            <td>test</td>
+            <td>test</td>
         </tr>
     </tbody>
 </table>
@@ -69,21 +49,16 @@
     // contains two LatLng coordinates.
 
 
-    var routeCoordinates = [
-        { lat: 50.26489189999999, lng: 19.02378150000004 },
-        { lat: 50.48774299999999, lng: 19.416625899999985 },
-        { lat: 50.8118195, lng: 19.120309399999996 },
-        { lat: 51.5311945, lng: 20.008647099999962 },
-        { lat: 52.229676, lng: 21.012228999999934 },
-        { lat: 50, lng: 19 }
-    ];
+
     var poly;
     var map;
 
     function initMap() {
+
+        var model = @Html.Raw(Json.Encode(Model));
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 7,
-            center: new google.maps.LatLng(routeCoordinates[1].lat, routeCoordinates[1].lng)
+            zoom: 8,
+            center: new google.maps.LatLng(model[1].Lat, model[1].Lng)
         });
 
         poly = new google.maps.Polyline({
@@ -93,16 +68,8 @@
         });
         poly.setMap(map);
 
-        
-        var model = @Html.Raw(Json.Encode(Model));
-        for(var i=0; i<model.length; i++)
-        {
-            //alert(model[i].Lat.toString());
-        }
-
         $.each(model, function (i, item) {
             latLng = new google.maps.LatLng(item.Lat, item.Lng);
-            alert(latLng.toString());
 
             var marker = new google.maps.Marker({
                 position: latLng,
@@ -127,7 +94,7 @@
                         $(this).parent().addClass('info').siblings().removeClass('info');
                     }
                 });
-            }); item
+            });
             //$(function () { // adding table routeCoordinates
             //$('#myTable tr:last').after(' <tr><th scope="row">'i.toString()'</th> td>Mark</td> <td>Otto</td>  <td>mdo</td>  </tr>');
             $("#mytable").find('tbody')

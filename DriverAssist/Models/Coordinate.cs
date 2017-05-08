@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -29,8 +30,12 @@ namespace DriverAssist.Models
                 {
                     while ((line = sr.ReadLine()) != null)
                     {
-                        var coords = line.Split(';');
-                        Coordinates.Add(new Coordinate { Lat = Double.Parse(coords[0]), Lng = Double.Parse(coords[1]) });
+                        var coords = line.Split(';'); 
+                        Coordinates.Add(new Coordinate { Lat = Double.Parse(coords[0], CultureInfo.InvariantCulture), Lng = Double.Parse(coords[1], CultureInfo.InvariantCulture) });
+                        for (int i = 0; i < 10; i++)  // testy wydajnosciowe :p
+                        {
+                            Coordinates.Add(new Coordinate { Lat = Double.Parse(coords[0], CultureInfo.InvariantCulture), Lng = Double.Parse(coords[1], CultureInfo.InvariantCulture) + 0.00001 * i });
+                        }
                     }
                 }
             }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 
 namespace DriverAssist.Controllers
 {
@@ -24,9 +23,9 @@ namespace DriverAssist.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult UserProfile()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Ustawienia uzytkownika";
 
             return View();
         }
@@ -34,7 +33,13 @@ namespace DriverAssist.Controllers
         public ActionResult Maps()
         {
             ViewBag.Message = "Dane przejazdu";
-           
+
+            return View(model.Coordinates);
+        }
+
+        public ActionResult Passages()
+        {
+            ViewBag.Message = "Lista przejazdów";
 
             return View(model.Coordinates);
         }

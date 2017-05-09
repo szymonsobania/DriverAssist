@@ -2,30 +2,114 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Ostatni przejazd</h4>
+                        <p class="category">Trasa: Katowice - Gdańsk</p>
+                        <p class="category">Czas przejazdu: 2h 45m</p>
+                    </div>
+                    <div class="content">
+                       
+                        <div id="chart_div" style="width: 380px; height: 120px;"></div>
+                        </br></br>
+                        <div id="fuel_chart" style="width: 380px; height: 120px;"></div>
+
+                        <div class="footer">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 10 minutes ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Mapa przejazdu</h4>
+                    </div>
+                    <div class="content">
+                      
+                        
+
+                        <div class="footer">
+                            <hr>
+                            <div class="stats">
+                                <i class="fa fa-history"></i> Updated 3 minutes ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("visualization", "1", { packages: ['controls', 'corechart'] });
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Czas', 'Spalanie'],
+            ['0', 0,],
+            ['30', 3.5,],
+            ['1h', 9.8,],
+            ['1,5h', 10,],
+            ['2h', 12.75,],
+            ['2,5h', 11.5],
+            ['2h 45m', 10.5]
+        ]);
+
+        var options = {
+            title: 'Fuel Consumption'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('fuel_chart'));
+        chart.draw(data, options);
+    }
+</script>
+
+
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['gauge', 'corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+   
+
+    function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Min Speed', 5 ],
+            ['Med Speed', 70],
+            ['Max Speed', 147]
+        ]);
+
+        var options = {
+            width: 400, height: 120,
+            redFrom: 140, redTo: 200,
+            yellowFrom: 100, yellowTo: 140,
+            minorTicks: 10,
+            max: 200
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+
+    }
+</script>
+
+
+
+

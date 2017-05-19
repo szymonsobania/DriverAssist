@@ -1,0 +1,331 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Statistics";
+}
+@model IEnumerable<DriverAssist.Models.Coordinate>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"> </script>
+<div id="map" style="height: 300px; height:50%; text-align: center; width: 100%;"></div>
+<
+
+<div class="content">
+    <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" data-toggle="tooltip" data-placement="left"
+       style="cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display:none;"><span class="glyphicon glyphicon-chevron-up"></span></a>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Sensor Tables</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="#section1">Accelerometer</a></li>
+                    <li><a href="#section2">GPS</a></li>
+                    <li><a href="#section3">Magnetometer</a></li>
+                    <li><a href="#section4">Gyroscope</a></li>
+                    <li><a href="#section5">Whatever</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="section1" class="container-fluid">
+            <h1>Chart</h1>
+            <div id="chart_div"></div>
+        </div>
+        <div id="section2" class="container-fluid">
+            <h1>Accelometer</h1>
+            <div id="dashboard">
+                <div id="chart_div2"></div>
+                <div id="range_filter_div"></div>
+            </div>
+        </div>
+        <div id="section3" class="container-fluid">
+            <h1>Section 3</h1>
+            <p>TestTestTestTestTestTestTest</p>
+        </div>
+        <div id="section4" class="container-fluid">
+            <h1>Section 4</h1>
+            <p>TestTestTestTestTestTestTest</p>
+        </div>
+        <div id="section5" class="container-fluid">
+            <h1>Section 5</h1>
+            <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+            <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $('#mytable  tbody tr').click(function () {
+        $(this).addClass('info').siblings().removeClass('info');
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 50) {
+                $('#back-to-top').fadeIn();
+            } else {
+                $('#back-to-top').fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        $('#back-to-top').click(function () {
+            $('#back-to-top').tooltip('hide');
+            $('.content').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+
+        $('#back-to-top').tooltip('show');
+    });
+</script>
+
+<script type="text/javascript">
+
+    // This example creates an interactive map which constructs a polyline based on
+    // user clicks. Note that the polyline only appears once its path property
+    // contains two LatLng coordinates.
+
+
+
+    var poly;
+    var map;
+
+    function initMap() {
+
+        var model = @Html.Raw(Json.Encode(Model));
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: new google.maps.LatLng(model[1].Lat, model[1].Lng)
+        });
+
+        poly = new google.maps.Polyline({
+            strokeColor: '#ff0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 3
+        });
+        poly.setMap(map);
+
+        $.each(model, function (i, item) {
+            latLng = new google.maps.LatLng(item.Lat, item.Lng);
+
+            var marker = new google.maps.Marker({
+                position: latLng,
+                title: poly.getPath().getLength().toString(), // tytul jet id, potem po nim zaznaczamy w tabeli
+                map: map
+            });
+            poly.getPath().push(latLng);
+
+            marker.setIcon('https://lh3.ggpht.com/hx6IeSRualApBd7KZB9s2N7bcHZIjtgr9VEuOxHzpd05_CZ6RxZwehpXCRN-1ps3HuL0g8Wi=w9-h9')
+
+            // put in some information about each json object - in this case, the opening hours.
+            var infowindow = new google.maps.InfoWindow({
+                content: '#' + poly.getPath().getLength()
+            });
+
+            // finally hook up an "OnClick" listener to the map so it pops up out info-window when the marker-pin is clicked!
+            google.maps.event.addListener(marker, 'click', function () {
+                infowindow.open(map, marker);
+                $('#mytable th:nth-child(1)').each(function () {
+                    if (marker.getTitle() == ($(this).html())) {
+                        alert(marker.getTitle());
+                        $(this).parent().addClass('info').siblings().removeClass('info');
+                    }
+                });
+            });
+            //$(function () { // adding table routeCoordinates
+            //$('#myTable tr:last').after(' <tr><th scope="row">'i.toString()'</th> td>Mark</td> <td>Otto</td>  <td>mdo</td>  </tr>');
+            //$("#mytable").find('tbody')
+            //    .append($('<tr>')
+            //        .append($('<th scope="row">' + i.toString() + '</th>'))
+            //        .append($('<td>' + item.Lat.toString() + '</td>'))
+            //        .append($('<td>' + item.Lng.toString() + '</td>'))
+            //        .append($('</tr>'))
+            //    );
+            // });
+        })
+
+
+
+        // Add a listener for the click event
+        // map.addListener('click', addLatLng);
+    }
+
+    // Handles click events on a map, and adds a new point to the Polyline.
+    function addLatLng(event) {
+        var path = poly.getPath();
+
+        // Because path is an MVCArray, we can simply append a new coordinate
+        // and it will automatically appear.
+        path.push(event.latLng);
+
+        // Add a new marker at the new plotted point on the polyline.
+        var marker = new google.maps.Marker({
+            position: event.latLng,
+            title: '#' + path.getLength(),
+            map: map
+        });
+    }
+
+    google.maps.event.addDomListener(window, 'load', initMap);
+
+
+
+</script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { packages: ['corechart', 'line', 'controls'] });
+    //google.charts.load('visualization', '1', { packages: ['controls'] });
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+
+    var model = @Html.Raw(Json.Encode(Model));
+    function drawBackgroundColor() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Lat');
+        data.addColumn('number', 'Lng');
+
+        $.each(model,
+            function (i, item) {
+               // alert(item.Lat.toString());
+                data.addRow([item.Lng, item.Lat]);
+            });
+        //data.addRows([
+        //    [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
+        //    [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
+        //    [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
+        //    [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
+        //    [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
+        //    [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
+        //    [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
+        //    [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
+        //    [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
+        //    [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
+        //    [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
+        //    [66, 70], [67, 72], [68, 75], [69, 80]
+        //]);
+
+        var data2 = new google.visualization.DataTable();
+        data2.addColumn('number', 'Lat');
+        data2.addColumn('number', 'Lng');
+
+        data2.addRows([
+            [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
+            [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
+            [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
+            [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
+            [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53]
+
+        ]);
+
+        var options = {
+            hAxis: {
+                title: 'Time'
+            },
+            vAxis: {
+                title: 'Popularity'
+            },
+            explorer: {
+                keepInBounds: true,
+                    actions: ['dragToZoom', 'rightClickToReset']
+            }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+
+        google.visualization.events.addListener(chart, 'select', function () {
+            //chart.draw(data2, options);
+        });
+
+        /////////////////////////////////
+        var data3 = new google.visualization.DataTable();
+        data3.addColumn('date', 'Date');
+        data3.addColumn('number', 'Lng');
+
+        // add some random data
+        for (var i = 1; i < 101; i++) {
+            data3.addRow([new Date(2012, 0, i), Math.round(Math.random() * 100)]);
+        }
+
+        var rangeFilter = new google.visualization.ControlWrapper({
+            controlType: 'ChartRangeFilter',
+            containerId: 'range_filter_div',
+            options: {
+                filterColumnIndex: 0,
+                ui: {
+                    chartOptions: {
+                        height: 50,
+                        chartArea: {
+                            width: '75%'
+                        }
+                    },
+                    minRangeSize: 86400000, // 86400000ms = 1 day
+                    snapToData: true
+                }
+            },
+            view: {
+                columns: [0, 1]
+            },
+            state: {
+                range: {
+                    // set the starting range to January 2012
+                    start: new Date(2012, 0, 1),
+                    end: new Date(2012, 0, 31)
+                }
+            }
+        });
+
+        var chart2 = new google.visualization.ChartWrapper({
+            chartType: 'LineChart',
+            containerId: 'chart_div2',
+            options: {
+                // width and chartArea.width should be the same for the filter and chart
+                height: 400,
+                chartArea: {
+                    width: '75%'
+                }
+            }
+        });
+
+        // Create the dashboard
+        var dash = new google.visualization.Dashboard(document.getElementById('dashboard'));
+        // bind the chart to the filter
+        dash.bind([rangeFilter], [chart2]);
+        // draw the dashboard
+        dash.draw(data3);
+    }
+</script>
+@*<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+
+
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart () {
+
+        }
+    </script>*@
+
+
+@section scripts {
+    <!--  Google Maps Plugin    -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    @*<script src="~/assets/js/myJS.js"></script>*@
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVdWukfQJEFY_VO20ny3G8egrK2gS2QvI"></script> -->
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAN2leofGiYu947JXBwlik7Gj0b5hgQ758&callback=initMap">
+    </script>
+}
+

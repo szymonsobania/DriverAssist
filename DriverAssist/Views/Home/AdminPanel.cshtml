@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "AdminPanel";
+}
+
+
+<div class="card">
+    <div class="header">
+        <h4 class="title">List of users</h4>
+        <p class="category">Check out their passages</p>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table id="tableContract" class="table table-hover table-striped">
+            <thead>
+            <th>User_ID</th>
+            <th>Nickname</th>
+            <th>Car</th>
+            </thead>
+            <tbody>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>1</td>
+                    <td>klimajster</td>
+                    <td>Opel Corsa</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>2</td>
+                    <td>adamek</td>
+                    <td>Opel Corsa</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>3</td>
+                    <td>robercik</td>
+                    <td>Opel Corsa</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>4</td>
+                    <td>szymonek</td>
+                    <td>Toyota Yaris</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>5</td>
+                    <td>rzepka</td>
+                    <td>Peugeot 207</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>6</td>
+                    <td>alealealeksandra</td>
+                    <td>Opel Corsa</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>7</td>
+                    <td>rafaelko</td>
+                    <td>Opel Corsa</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>8</td>
+                    <td>joseph</td>
+                    <td>Opel Corsa</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>9</td>
+                    <td>ChandlerBing</td>
+                    <td>Peugeot 207</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>10</td>
+                    <td>vinDiesel</td>
+                    <td>Toyota Yaris</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>11</td>
+                    <td>ChandlerBing</td>
+                    <td>Opel Corsa</td>
+                </tr>
+                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                    <td>12</td>
+                    <td>fafaello</td>
+                    <td>Toyota Yaris</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

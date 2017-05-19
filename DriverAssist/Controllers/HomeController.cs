@@ -16,9 +16,9 @@ namespace DriverAssist.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult AdminPanel()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Administrator page";
 
             return View();
         }
@@ -30,16 +30,16 @@ namespace DriverAssist.Controllers
             return View();
         }
 
-        public ActionResult Maps()
+        public ActionResult Passages()
         {
-            ViewBag.Message = "Dane przejazdu";
+            ViewBag.Message = "Lista przejazdów";
 
             return View(model.Coordinates);
         }
 
-        public ActionResult Passages()
+        public ActionResult Statistics()
         {
-            ViewBag.Message = "Lista przejazdów";
+            ViewBag.Message = "Dane przejazdu";
 
             return View(model.Coordinates);
         }

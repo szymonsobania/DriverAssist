@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "AdminPanel";
+    @model IList<DriverAssist.Models.UserModel>
 }
 
 
@@ -16,68 +17,24 @@
             <th>Car</th>
             </thead>
             <tbody>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>1</td>
-                    <td>klimajster</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>2</td>
-                    <td>adamek</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>3</td>
-                    <td>robercik</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>4</td>
-                    <td>szymonek</td>
-                    <td>Toyota Yaris</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>5</td>
-                    <td>rzepka</td>
-                    <td>Peugeot 207</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>6</td>
-                    <td>alealealeksandra</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>7</td>
-                    <td>rafaelko</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>8</td>
-                    <td>joseph</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>9</td>
-                    <td>ChandlerBing</td>
-                    <td>Peugeot 207</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>10</td>
-                    <td>vinDiesel</td>
-                    <td>Toyota Yaris</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>11</td>
-                    <td>ChandlerBing</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
-                    <td>12</td>
-                    <td>fafaello</td>
-                    <td>Toyota Yaris</td>
-                </tr>
-
+                @foreach (var item in Model)
+                {
+                    <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
+                        <td>@item.ID</td>
+                        <td>@item.Nickname</td>
+                        <td>@item.Car</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"> </script>
+<script>
+     jQuery(document).ready(function ($) {
+         $(".clickable-row").click(function () {
+             window.location = $(this).data("href");
+         });
+     });
+</script>

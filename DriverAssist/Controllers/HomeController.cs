@@ -19,8 +19,9 @@ namespace DriverAssist.Controllers
         public ActionResult AdminPanel()
         {
             ViewBag.Message = "Administrator page";
+            var table = UserTable.GetUserTable();
 
-            return View();
+            return View(table);
         }
 
         public ActionResult UserProfile()

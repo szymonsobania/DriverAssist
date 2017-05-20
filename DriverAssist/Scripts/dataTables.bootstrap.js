@@ -19,10 +19,10 @@ var factory = function( $, DataTable ) {
 /* Set the defaults for DataTables initialisation */
 $.extend( true, DataTable.defaults, {
     dom:
-    "<'row marginTop'<'col-sm-12 'f>>" +
-    "<'row marginTop'<'col-sm-12'tr>>" +
+        "<<'col-sm-12 'f>>" +
+        "<'row marginTop'<'col-sm-12'tr>>" +
 
-    " <'row marginTop' <'col-sm-2 'l>> <'row'<'col-sm-6'i><'col-sm-6'p>>",
+        " <'row marginTop' <'col-sm-2 'l>> <'row'<'col-sm-6'i><'col-sm-6'p>>",
     renderer: 'bootstrap'
 } );
 

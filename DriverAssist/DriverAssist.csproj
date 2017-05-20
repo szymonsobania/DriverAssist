@@ -154,6 +154,7 @@
     </Compile>
     <Compile Include="Models\Coordinate.cs" />
     <Compile Include="Models\UserAccount.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

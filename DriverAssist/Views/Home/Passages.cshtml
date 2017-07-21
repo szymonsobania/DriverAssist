@@ -3,19 +3,30 @@
 *@
 @{
     ViewData["Title"] = "Passages";
+    @model IList<DriverAssist.Models.PassageModel>
 }
-@model IEnumerable<DriverAssist.Models.Coordinate>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"> </script>
-<!-- <div id="map" style="height:50%; text-align: center; width: 100%;"></div> -->
-
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+<script src="~/Scripts/dataTables.bootstrap.js"></script>
+<script src="~/Scripts/MVCDataTableJqueryBootStrap-ui.js"></script>
+<script src="~/Scripts/dataTables.js"></script>
+@*<link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />*@
 
 <div class="card">
     <div class="header">
         <h4 class="title">List of passages</h4>
         <p class="category">Check out your passages</p>
     </div>
+    <div>
+        <a class="toggle-vis" data-column="0" href="#">Ride_ID</a>-
+        <a class="toggle-vis" data-column="1" href="#">Date</a>-
+        <a class="toggle-vis" data-column="2" href="#">Time</a>-
+        <a class="toggle-vis" data-column="3" href="#">Length</a>-
+        <a class="toggle-vis" data-column="4" href="#">Vehicle</a>
+    </div>
     <div class="content table-responsive table-full-width">
-        <table id="mytable" class="table table-hover table-striped">
+        <table id="example" class="table table-hover table-striped">
             <thead>
             <th>Ride_ID</th>
             <th>Date</th>
@@ -23,78 +34,26 @@
             <th>Length</th>
             <th>Vehicle</th>
             </thead>
+            <tfoot>
+                <tr>
+                    <th>Ride_ID</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Length [KM]</th>
+                    <th>Vehicle</th>
+                </tr>
+            </tfoot>
             <tbody>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>1</td>
-                    <td>19.03.2017</td>
-                    <td>2h 34m 50s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>2</td>
-                    <td>18.03.2017</td>
-                    <td>2h 2m 50s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>3</td>
-                    <td>10.02.2017</td>
-                    <td>1h 23m 50s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>4</td>
-                    <td>21.03.2017</td>
-                    <td>1h 54m 10s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>5</td>
-                    <td>19.03.2017</td>
-                    <td>2h 34m 50s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>6</td>
-                    <td>18.03.2017</td>
-                    <td>2h 2m 50s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>7</td>
-                    <td>10.02.2017</td>
-                    <td>1h 23m 50s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>8</td>
-                    <td>21.03.2017</td>
-                    <td>1h 54m 10s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>9</td>
-                    <td>10.02.2017</td>
-                    <td>1h 23m 50s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-                <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
-                    <td>10</td>
-                    <td>21.03.2017</td>
-                    <td>1h 54m 10s</td>
-                    <td>25 km</td>
-                    <td>Opel Corsa</td>
-                </tr>
-              
+                @foreach (var item in Model)
+                {
+                    <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
+                        <td>@item.Passage_ID</td>
+                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Time</td>
+                        <td>@item.Length</td>
+                        <td>@item.Car</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -105,116 +64,271 @@
         $(this).addClass('info').siblings().removeClass('info');
     });
 </script>
+
+
 <script>
+    jQuery(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
 
-    // This example creates an interactive map which constructs a polyline based on
-    // user clicks. Note that the polyline only appears once its path property
-    // contains two LatLng coordinates.
 
 
+<script type="text/javascript">
+    $(document).ready(function () {
 
-    var poly;
-    var map;
+        // DataTable
+        var table = $('#example').DataTable();
 
-    function initMap() {
 
-        var model = @Html.Raw(Json.Encode(Model));
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 8,
-            center: new google.maps.LatLng(model[1].Lat, model[1].Lng)
+        $('a.toggle-vis').on('click', function (e) {
+            e.preventDefault();
+
+            var column = table.column($(this).attr('data-column'));
+
+            column.visible(!column.visible());
         });
 
-        poly = new google.maps.Polyline({
-            strokeColor: '#ff0000',
-            strokeOpacity: 1.0,
-            strokeWeight: 3
+
+        $('#example tfoot th').each(function () {
+            var title = $('#example thead th').eq($(this).index()).text();
+            $(this).html('<input type="text" placeholder="Search ' + title + '"id="' + title.replace(/ /g, '') + '" />');
         });
-        poly.setMap(map);
 
-        $.each(model, function (i, item) {
-            latLng = new google.maps.LatLng(item.Lat, item.Lng);
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
 
-            var marker = new google.maps.Marker({
-                position: latLng,
-                title: poly.getPath().getLength().toString(), // tytul jet id, potem po nim zaznaczamy w tabeli
-                map: map
-            });
-            poly.getPath().push(latLng);
+                var value = $("#Length").val();
 
-            marker.setIcon('https://lh3.ggpht.com/hx6IeSRualApBd7KZB9s2N7bcHZIjtgr9VEuOxHzpd05_CZ6RxZwehpXCRN-1ps3HuL0g8Wi=w9-h9')
-
-            // put in some information about each json object - in this case, the opening hours.
-            var infowindow = new google.maps.InfoWindow({
-                content: '#' + poly.getPath().getLength()
-            });
-
-            // finally hook up an "OnClick" listener to the map so it pops up out info-window when the marker-pin is clicked!
-            google.maps.event.addListener(marker, 'click', function () {
-                infowindow.open(map, marker);
-                $('#mytable th:nth-child(1)').each(function () {
-                    if (marker.getTitle() == ($(this).html())) {
-                        alert(marker.getTitle());
-                        $(this).parent().addClass('info').siblings().removeClass('info');
+                if (value == "") {
+                    return true;
+                }
+                else if (value.indexOf('<') == -1) {
+                    var qty = parseInt(data[3], 10) || 0;
+                    if (qty == value) {
+                        return true;
                     }
-                });
+                        return false;
+                }
+                
+                var split = value.split('<', 2);
+
+                var min = 0;
+                var max = 0;
+
+                if (split != null) {
+                    min = parseInt(split[0], 10);
+                    max = parseInt(split[1], 10);
+
+                    if (isNaN(min)) {
+                        min = 0;
+                    }
+                    if (isNaN(max)) {
+                        max = 0;
+                    }
+                }
+
+                var qty = parseInt(data[3], 10) || 0;
+
+                if (min < qty && qty < max) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var value = $("#Time").val();
+
+                if (value == "") {
+                    return true;
+                }
+                else if (value.indexOf('<') == -1) {
+                    var qty = data[2];
+                    if (qty == value) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                var split = value.split('<', 2);
+
+                if (split != null) {
+                    var min = split[0];
+                    var max = split[1];
+
+                    var minSplit = min.split(':', 3);
+                    var maxSplit = max.split(':', 3);
+
+                    var minHour = parseInt(minSplit[0], 10);
+                    var minMin = parseInt(minSplit[1], 10);
+                    var minSec = parseInt(minSplit[2], 10);
+                    var maxHour = parseInt(maxSplit[0], 10);
+                    var maxMin = parseInt(maxSplit[1], 10);
+                    var maxSec = parseInt(maxSplit[2], 10);
+
+                    if (isNaN(minHour)) {
+                        minHour = 0;
+                        minMin = 0;
+                        minSec = 0;
+                    }
+                }
+
+
+                var qty = data[2];
+                var qtySplit = qty.split(':', 3);
+                var qtyHour = parseInt(qtySplit[0], 10);
+                var qtyMin = parseInt(qtySplit[1], 10);
+                var qtySec = parseInt(qtySplit[2], 10);
+
+                if (minHour < qtyHour && qtyHour < maxHour) {
+                    return true;
+                }
+                else if (qtyHour == maxHour && qtyMin < maxMin && split[0] == "") {
+                    return true;
+                }
+                else if ((qtyHour == minHour && qtyMin > minMin) && (qtyHour == maxHour && qtyMin < maxMin)) {
+                    return true;
+                }
+                else if (qtyHour == maxHour && qtyMin == maxMin && qtySec < maxSec && split[0] == "") {
+                    return true;
+                }
+                else if ((qtyHour == minHour && qtyMin == minMin && qtySec > minSec) && (qtyHour == maxHour && qtyMin == maxMin && qtySec < maxSec)) {
+                    return true;
+                }
+               
+                return false;
+            }
+        );
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var value = $("#Date").val();
+
+                if (value == "") {
+                    return true;
+                }
+                else if (value.indexOf('<') == -1) {
+                    var qty = data[1];
+                    if (qty == value) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                var split = value.split('<', 2);
+
+                if (split != null) {
+                    var min = split[0];
+                    var max = split[1];
+
+                    var minSplit = min.split('.', 3);
+                    var maxSplit = max.split('.', 3);
+
+                    var minDay = parseInt(minSplit[0], 10);
+                    var minMon = parseInt(minSplit[1], 10);
+                    var minYer = parseInt(minSplit[2], 10);
+                    var maxDay = parseInt(maxSplit[0], 10);
+                    var maxMon = parseInt(maxSplit[1], 10);
+                    var maxYer = parseInt(maxSplit[2], 10);
+
+                    if (isNaN(minDay)) {
+                        minDay = 0;
+                        minMon = 0;
+                        minYer = 0;
+                    }
+                }
+
+
+                var qty = data[1];
+                var qtySplit = qty.split('.', 3);
+                var qtyDay = parseInt(qtySplit[0], 10);
+                var qtyMon = parseInt(qtySplit[1], 10);
+                var qtyYer = parseInt(qtySplit[2], 10);
+
+                if (minYer < qtyYer && qtyYer < maxYer) {
+                    return true;
+                }
+                else if (qtyYer == maxYer && qtyMon < maxMon && split[0] == "") {
+                    return true;
+                }
+                else if ((qtyYer == minYer && qtyMon > minMon) && (qtyYer == maxYer && qtyMon < maxMon)) {
+                    return true;
+                }
+                else if (qtyYer == maxYer && qtyMon == maxMon && qtyDay < maxDay && split[0] == "") {
+                    return true;
+                }
+                else if ((qtyYer == minYer && qtyMon == minMon && qtyDay > minDay) && (qtyYer == maxYer && qtyMon == maxMon && qtyDay < maxDay)) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var value = $("#Ride_ID").val();
+
+                if (value == "") {
+                    return true;
+                }
+                else if (value.indexOf('<') == -1) {
+                    var qty = parseInt(data[0], 10) || 0;
+                    if (qty == value) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                var split = value.split('<', 2);
+
+                var min = 0;
+                var max = 0;
+
+                if (split != null) {
+                    min = parseInt(split[0], 10);
+                    max = parseInt(split[1], 10);
+
+                    if (isNaN(min)) {
+                        min = 0;
+                    }
+                    if (isNaN(max)) {
+                        max = 0;
+                    }
+                }
+
+                var qty = parseInt(data[0], 10) || 0;
+
+                if (min < qty && qty < max) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', table.column(colIdx).footer()).on('keyup change', function () {
+                if (colIdx == 4) {
+                    table
+                        .column(colIdx)
+                        .search(this.value, true)
+                        .draw();
+                }
+                else {
+                    table.draw();
+                }
+               
             });
-            //$(function () { // adding table routeCoordinates
-            //$('#myTable tr:last').after(' <tr><th scope="row">'i.toString()'</th> td>Mark</td> <td>Otto</td>  <td>mdo</td>  </tr>');
-            $("#mytable").find('tbody')
-                .append($('<tr>')
-                    .append($('<th scope="row">' + i.toString() + '</th>'))
-                    .append($('<td>' + item.Lat.toString() + '</td>'))
-                    .append($('<td>' + item.Lng.toString() + '</td>'))
-                    .append($('</tr>'))
-
-                );
-            // });
-        })
-
-
-
-        // Add a listener for the click event
-        // map.addListener('click', addLatLng);
-    }
-
-    // Handles click events on a map, and adds a new point to the Polyline.
-    function addLatLng(event) {
-        var path = poly.getPath();
-
-        // Because path is an MVCArray, we can simply append a new coordinate
-        // and it will automatically appear.
-        path.push(event.latLng);
-
-        // Add a new marker at the new plotted point on the polyline.
-        var marker = new google.maps.Marker({
-            position: event.latLng,
-            title: '#' + path.getLength(),
-            map: map
         });
-    }
 
-    google.maps.event.addDomListener(window, 'load', initMap);
+    });
 </script>
-
-<script>
-     jQuery(document).ready(function ($) {
-         $(".clickable-row").click(function () {
-             window.location = $(this).data("href");
-         });
-     });
-</script>
-
-
-
-
-
-@section scripts {
-
-    <!--  Google Maps Plugin    -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    @*<script src="~/assets/js/myJS.js"></script>*@
-    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVdWukfQJEFY_VO20ny3G8egrK2gS2QvI"></script> -->
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAN2leofGiYu947JXBwlik7Gj0b5hgQ758&callback=initMap">
-    </script>
-}

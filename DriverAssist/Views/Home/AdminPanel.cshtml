@@ -14,7 +14,8 @@
             <thead>
             <th>User_ID</th>
             <th>Nickname</th>
-            <th>Car</th>
+            <th>Name</th>
+            <th>Surname</th>
             </thead>
             <tbody>
                 @foreach (var item in Model)
@@ -22,7 +23,8 @@
                     <tr class="clickable-row" data-href="@Url.Action("Passages", "Home")">
                         <td>@item.ID</td>
                         <td>@item.Nickname</td>
-                        <td>@item.Car</td>
+                        <td>@item.Name</td>
+                        <td>@item.Surname</td>
                     </tr>
                 }
             </tbody>

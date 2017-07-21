@@ -58,15 +58,15 @@
                         </a>
                     </li>
                     <li>
-                        <a href="@Url.Action("AdminPanel", "Home")">
-                            <i class="pe-7s-user"></i>
-                            <p>Administrator</p>
-                        </a>
-                    </li>
-                    <li>
                         <a href="#">
                             <i class="pe-7s-power"></i>
                             <p>Log out</p>
+                        </a>
+                    </li>
+                    <li style="visibility:hidden;">
+                        <a href="@Url.Action("AdminPanel", "Home")">
+                            <i class="pe-7s-user"></i>
+                            <p>Administrator</p>
                         </a>
                     </li>
                 </ul>
@@ -113,10 +113,9 @@
 
     </div>
 
-    
-   
+
     <!--   Core JS Files   -->
-    <script src="~/Scripts/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-3.1.0.min.js" type="text/javascript"></script>
     <script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
     <!--  Checkbox, Radio & Switch Plugins -->
     <script src="~/Scripts/bootstrap-checkbox-radio-switch.js"></script>
@@ -131,7 +130,9 @@
     <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/dataTables.bootstrap.js"></script>
     <script src="~/Scripts/MVCDataTableJqueryBootStrap-ui.js"></script>
+    <script src="~/Scripts/dataTables.js"></script>
     @RenderSection("scripts", required: false)
+
 
 
 </body>

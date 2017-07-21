@@ -15,10 +15,6 @@ namespace DriverAssist.Models
         public string Username { get; set; }
 
 
-        [Required(ErrorMessage = "Email is required")]
-        public string Email { get; set; }
-
-
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

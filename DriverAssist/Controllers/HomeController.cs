@@ -16,6 +16,11 @@ namespace DriverAssist.Controllers
             return View();
         }
 
+        public ActionResult Login()
+        {
+            return View();
+        }
+
         public ActionResult AdminPanel()
         {
             ViewBag.Message = "Administrator page";
@@ -35,7 +40,9 @@ namespace DriverAssist.Controllers
         {
             ViewBag.Message = "Lista przejazdów";
 
-            return View(model.Coordinates);
+            var table = PassageTable.GetPassageTable();
+
+            return View(table);
         }
 
         public ActionResult Statistics()

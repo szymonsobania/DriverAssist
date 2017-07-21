@@ -6,7 +6,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="header">
                         <h4 class="title">Profile Settings</h4>
@@ -16,17 +16,11 @@
                         <form>
                             <div class="row">
                    
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Username</label>
                                         <input type="text" class="form-control" placeholder="Username" value=@Html.LabelFor(model => model.Username)>
                                        
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Email address</label>
-                                        <input type="email" class="form-control" placeholder="Email" value=@Html.LabelFor(model => model.Email)>
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            @*<div class="col-md-4">
                 <div class="card card-user">
                     <div class="image">
                         <img src="../img/background-profile.jpg" alt="..." />
@@ -96,7 +90,7 @@
                         <button href="https://www.facebook.com/" class="btn btn-simple"><i class="fa fa-facebook-square"></i></button>
                     </div>
                 </div>
-            </div>
+            </div>*@
         </div>
     </div>
 </div>

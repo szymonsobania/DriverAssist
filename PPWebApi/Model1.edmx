@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PP_testModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Pojazdy">
+          <Key>
+            <PropertyRef Name="id_pojazdu" />
+          </Key>
+          <Property Name="id_pojazdu" Type="bigint" Nullable="false" />
+          <Property Name="nazwa_pojazdu" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="marka" Type="varchar" MaxLength="40" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Przejazdy_fs">
+          <Key>
+            <PropertyRef Name="id_przejazdu" />
+          </Key>
+          <Property Name="id_przejazdu" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_uzytk" Type="bigint" Nullable="false" />
+          <Property Name="data_przejazdu" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="dane_przejazdu" Type="varbinary(max)" />
+          <Property Name="id_pojazdu" Type="bigint" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Przydzialy">
+          <Key>
+            <PropertyRef Name="id_uzytk" />
+            <PropertyRef Name="id_pojazdu" />
+          </Key>
+          <Property Name="id_uzytk" Type="bigint" Nullable="false" />
+          <Property Name="id_pojazdu" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tagi">
+          <Key>
+            <PropertyRef Name="id_tagu" />
+          </Key>
+          <Property Name="id_tagu" Type="bigint" Nullable="false" />
+          <Property Name="id_przejazdu" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="skrot" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="komentarz" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="Uzytkownicy">
+          <Key>
+            <PropertyRef Name="id_uzytk" />
+          </Key>
+          <Property Name="id_uzytk" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nazwa_uzytk" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="imie" Type="varchar" MaxLength="20" />
+          <Property Name="nazwisko" Type="varchar" MaxLength="25" />
+          <Property Name="haslo" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="administrator" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Przejazdy_Pojazdy">
+          <End Role="Pojazdy" Type="Self.Pojazdy" Multiplicity="0..1" />
+          <End Role="Przejazdy_fs" Type="Self.Przejazdy_fs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pojazdy">
+              <PropertyRef Name="id_pojazdu" />
+            </Principal>
+            <Dependent Role="Przejazdy_fs">
+              <PropertyRef Name="id_pojazdu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Przejazdy_Uzytkownicy">
+          <End Role="Uzytkownicy" Type="Self.Uzytkownicy" Multiplicity="1" />
+          <End Role="Przejazdy_fs" Type="Self.Przejazdy_fs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Uzytkownicy">
+              <PropertyRef Name="id_uzytk" />
+            </Principal>
+            <Dependent Role="Przejazdy_fs">
+              <PropertyRef Name="id_uzytk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Przydzialy_Pojazdy">
+          <End Role="Pojazdy" Type="Self.Pojazdy" Multiplicity="1" />
+          <End Role="Przydzialy" Type="Self.Przydzialy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pojazdy">
+              <PropertyRef Name="id_pojazdu" />
+            </Principal>
+            <Dependent Role="Przydzialy">
+              <PropertyRef Name="id_pojazdu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Przydzialy_Uzytkownicy">
+          <End Role="Uzytkownicy" Type="Self.Uzytkownicy" Multiplicity="1" />
+          <End Role="Przydzialy" Type="Self.Przydzialy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Uzytkownicy">
+              <PropertyRef Name="id_uzytk" />
+            </Principal>
+            <Dependent Role="Przydzialy">
+              <PropertyRef Name="id_uzytk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tagi_Przejazdy">
+          <End Role="Przejazdy_fs" Type="Self.Przejazdy_fs" Multiplicity="1" />
+          <End Role="Tagi" Type="Self.Tagi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Przejazdy_fs">
+              <PropertyRef Name="id_przejazdu" />
+            </Principal>
+            <Dependent Role="Tagi">
+              <PropertyRef Name="id_przejazdu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PP_testModelStoreContainer">
+          <EntitySet Name="Pojazdy" EntityType="Self.Pojazdy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Przejazdy_fs" EntityType="Self.Przejazdy_fs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tagi" EntityType="Self.Tagi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Uzytkownicy" EntityType="Self.Uzytkownicy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Przydzialy" EntityType="Self.Przydzialy" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Przydzialy].[id_uzytk] AS [id_uzytk], 
+    [Przydzialy].[id_pojazdu] AS [id_pojazdu]
+    FROM [dbo].[Przydzialy] AS [Przydzialy]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Przejazdy_Pojazdy" Association="Self.FK_Przejazdy_Pojazdy">
+            <End Role="Pojazdy" EntitySet="Pojazdy" />
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Przejazdy_Uzytkownicy" Association="Self.FK_Przejazdy_Uzytkownicy">
+            <End Role="Uzytkownicy" EntitySet="Uzytkownicy" />
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Przydzialy_Pojazdy" Association="Self.FK_Przydzialy_Pojazdy">
+            <End Role="Pojazdy" EntitySet="Pojazdy" />
+            <End Role="Przydzialy" EntitySet="Przydzialy" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Przydzialy_Uzytkownicy" Association="Self.FK_Przydzialy_Uzytkownicy">
+            <End Role="Uzytkownicy" EntitySet="Uzytkownicy" />
+            <End Role="Przydzialy" EntitySet="Przydzialy" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tagi_Przejazdy" Association="Self.FK_Tagi_Przejazdy">
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+            <End Role="Tagi" EntitySet="Tagi" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PP_testModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="PP_testEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Pojazdies" EntityType="PP_testModel.Pojazdy" />
+          <EntitySet Name="Przejazdy_fs" EntityType="PP_testModel.Przejazdy_fs" />
+          <EntitySet Name="Tagis" EntityType="PP_testModel.Tagi" />
+          <EntitySet Name="Uzytkownicies" EntityType="PP_testModel.Uzytkownicy" />
+          <AssociationSet Name="FK_Przejazdy_Pojazdy" Association="PP_testModel.FK_Przejazdy_Pojazdy">
+            <End Role="Pojazdy" EntitySet="Pojazdies" />
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Przejazdy_Uzytkownicy" Association="PP_testModel.FK_Przejazdy_Uzytkownicy">
+            <End Role="Uzytkownicy" EntitySet="Uzytkownicies" />
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tagi_Przejazdy" Association="PP_testModel.FK_Tagi_Przejazdy">
+            <End Role="Przejazdy_fs" EntitySet="Przejazdy_fs" />
+            <End Role="Tagi" EntitySet="Tagis" />
+          </AssociationSet>
+          <AssociationSet Name="Przydzialy" Association="PP_testModel.Przydzialy">
+            <End Role="Pojazdy" EntitySet="Pojazdies" />
+            <End Role="Uzytkownicy" EntitySet="Uzytkownicies" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Pojazdy">
+          <Key>
+            <PropertyRef Name="id_pojazdu" />
+          </Key>
+          <Property Name="id_pojazdu" Type="Int64" Nullable="false" />
+          <Property Name="nazwa_pojazdu" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="marka" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Przejazdy_fs" Relationship="PP_testModel.FK_Przejazdy_Pojazdy" FromRole="Pojazdy" ToRole="Przejazdy_fs" />
+          <NavigationProperty Name="Uzytkownicies" Relationship="PP_testModel.Przydzialy" FromRole="Pojazdy" ToRole="Uzytkownicy" />
+        </EntityType>
+        <EntityType Name="Przejazdy_fs">
+          <Key>
+            <PropertyRef Name="id_przejazdu" />
+          </Key>
+          <Property Name="id_przejazdu" Type="Guid" Nullable="false" />
+          <Property Name="id_uzytk" Type="Int64" Nullable="false" />
+          <Property Name="data_przejazdu" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="dane_przejazdu" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="id_pojazdu" Type="Int64" />
+          <NavigationProperty Name="Pojazdy" Relationship="PP_testModel.FK_Przejazdy_Pojazdy" FromRole="Przejazdy_fs" ToRole="Pojazdy" />
+          <NavigationProperty Name="Uzytkownicy" Relationship="PP_testModel.FK_Przejazdy_Uzytkownicy" FromRole="Przejazdy_fs" ToRole="Uzytkownicy" />
+          <NavigationProperty Name="Tagis" Relationship="PP_testModel.FK_Tagi_Przejazdy" FromRole="Przejazdy_fs" ToRole="Tagi" />
+        </EntityType>
+        <EntityType Name="Tagi">
+          <Key>
+            <PropertyRef Name="id_tagu" />
+          </Key>
+          <Property Name="id_tagu" Type="Int64" Nullable="false" />
+          <Property Name="id_przejazdu" Type="Guid" Nullable="false" />
+          <Property Name="skrot" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="komentarz" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Przejazdy_fs" Relationship="PP_testModel.FK_Tagi_Przejazdy" FromRole="Tagi" ToRole="Przejazdy_fs" />
+        </EntityType>
+        <EntityType Name="Uzytkownicy">
+          <Key>
+            <PropertyRef Name="id_uzytk" />
+          </Key>
+          <Property Name="id_uzytk" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nazwa_uzytk" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="imie" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="nazwisko" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="haslo" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="administrator" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Przejazdy_fs" Relationship="PP_testModel.FK_Przejazdy_Uzytkownicy" FromRole="Uzytkownicy" ToRole="Przejazdy_fs" />
+          <NavigationProperty Name="Pojazdies" Relationship="PP_testModel.Przydzialy" FromRole="Uzytkownicy" ToRole="Pojazdy" />
+        </EntityType>
+        <Association Name="FK_Przejazdy_Pojazdy">
+          <End Type="PP_testModel.Pojazdy" Role="Pojazdy" Multiplicity="0..1" />
+          <End Type="PP_testModel.Przejazdy_fs" Role="Przejazdy_fs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pojazdy">
+              <PropertyRef Name="id_pojazdu" />
+            </Principal>
+            <Dependent Role="Przejazdy_fs">
+              <PropertyRef Name="id_pojazdu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Przejazdy_Uzytkownicy">
+          <End Type="PP_testModel.Uzytkownicy" Role="Uzytkownicy" Multiplicity="1" />
+          <End Type="PP_testModel.Przejazdy_fs" Role="Przejazdy_fs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Uzytkownicy">
+              <PropertyRef Name="id_uzytk" />
+            </Principal>
+            <Dependent Role="Przejazdy_fs">
+              <PropertyRef Name="id_uzytk" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tagi_Przejazdy">
+          <End Type="PP_testModel.Przejazdy_fs" Role="Przejazdy_fs" Multiplicity="1" />
+          <End Type="PP_testModel.Tagi" Role="Tagi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Przejazdy_fs">
+              <PropertyRef Name="id_przejazdu" />
+            </Principal>
+            <Dependent Role="Tagi">
+              <PropertyRef Name="id_przejazdu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Przydzialy">
+          <End Type="PP_testModel.Pojazdy" Role="Pojazdy" Multiplicity="*" />
+          <End Type="PP_testModel.Uzytkownicy" Role="Uzytkownicy" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PP_testModelStoreContainer" CdmEntityContainer="PP_testEntities">
+          <EntitySetMapping Name="Pojazdies">
+            <EntityTypeMapping TypeName="PP_testModel.Pojazdy">
+              <MappingFragment StoreEntitySet="Pojazdy">
+                <ScalarProperty Name="marka" ColumnName="marka" />
+                <ScalarProperty Name="nazwa_pojazdu" ColumnName="nazwa_pojazdu" />
+                <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Przejazdy_fs">
+            <EntityTypeMapping TypeName="PP_testModel.Przejazdy_fs">
+              <MappingFragment StoreEntitySet="Przejazdy_fs">
+                <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
+                <ScalarProperty Name="dane_przejazdu" ColumnName="dane_przejazdu" />
+                <ScalarProperty Name="data_przejazdu" ColumnName="data_przejazdu" />
+                <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
+                <ScalarProperty Name="id_przejazdu" ColumnName="id_przejazdu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tagis">
+            <EntityTypeMapping TypeName="PP_testModel.Tagi">
+              <MappingFragment StoreEntitySet="Tagi">
+                <ScalarProperty Name="komentarz" ColumnName="komentarz" />
+                <ScalarProperty Name="skrot" ColumnName="skrot" />
+                <ScalarProperty Name="id_przejazdu" ColumnName="id_przejazdu" />
+                <ScalarProperty Name="id_tagu" ColumnName="id_tagu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Uzytkownicies">
+            <EntityTypeMapping TypeName="PP_testModel.Uzytkownicy">
+              <MappingFragment StoreEntitySet="Uzytkownicy">
+                <ScalarProperty Name="administrator" ColumnName="administrator" />
+                <ScalarProperty Name="haslo" ColumnName="haslo" />
+                <ScalarProperty Name="nazwisko" ColumnName="nazwisko" />
+                <ScalarProperty Name="imie" ColumnName="imie" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="nazwa_uzytk" ColumnName="nazwa_uzytk" />
+                <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Przydzialy" TypeName="PP_testModel.Przydzialy" StoreEntitySet="Przydzialy">
+            <EndProperty Name="Uzytkownicy">
+              <ScalarProperty Name="id_uzytk" ColumnName="id_uzytk" />
+            </EndProperty>
+            <EndProperty Name="Pojazdy">
+              <ScalarProperty Name="id_pojazdu" ColumnName="id_pojazdu" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

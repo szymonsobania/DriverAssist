@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f8936fd85ee842528ac66daf4005010e" Name="Diagram1">
+        <EntityTypeShape EntityType="PP_testModel.Pojazdy" Width="1.5" PointX="3.375" PointY="3.125" />
+        <EntityTypeShape EntityType="PP_testModel.Przejazdy_fs" Width="1.5" PointX="7.875" PointY="4.75" />
+        <EntityTypeShape EntityType="PP_testModel.Tagi" Width="1.5" PointX="10.125" PointY="5" />
+        <EntityTypeShape EntityType="PP_testModel.Uzytkownicy" Width="1.5" PointX="5.625" PointY="6.125" />
+        <AssociationConnector Association="PP_testModel.FK_Przejazdy_Pojazdy" />
+        <AssociationConnector Association="PP_testModel.FK_Przejazdy_Uzytkownicy" />
+        <AssociationConnector Association="PP_testModel.FK_Tagi_Przejazdy" />
+        <AssociationConnector Association="PP_testModel.Przydzialy" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

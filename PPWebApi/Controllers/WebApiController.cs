@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace AuthWebApi.Controllers
 {
-    public class HomeController : Controller
+    public class WebApiController : Controller
     {
         public ActionResult Index()
         {

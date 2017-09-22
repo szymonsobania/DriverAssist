@@ -231,7 +231,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Passages.cshtml" />
     <Content Include="Views\Home\Statistics.cshtml" />
-    <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

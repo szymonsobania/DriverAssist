@@ -52,12 +52,5 @@ namespace DriverAssist.Controllers
             return View(model.Coordinates);
         }
 
-        public ActionResult LoginFailed()
-        {
-            return View("Error");
-        }
-
-
-
     }
 }

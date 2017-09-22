@@ -9,14 +9,18 @@
     <div class="row">
         <div class="col-md-offset-5 col-md-3">
             <div class="form-login">
+                @if (Session["LoginError"] != null)
+                {
+                    <p style="color: red;">@Session["LoginError"].ToString()</p>
+                }
                 <h4>Please log in</h4>
                 @using (Html.BeginForm("Login", "Login", FormMethod.Post))
                 {
-                    @Html.TextBox("username", null, new { @class = "form-control input-sm chat-input" })
-                    @Html.TextBox("password", null, new { @class = "form-control input-sm chat-input" })
+                    @Html.TextBox("username", null, new {@class = "form-control input-sm chat-input", placeholder = "Login" })
+                    @Html.TextBox("password", null, new {@class = "form-control input-sm chat-input", placeholder = "Password", @type = "password" })
                     <div class="wrapper">
                         <span class="group-btn">
-                            <input type="submit" class="btn btn-primary btn-md" value="Login" />
+                            <input type="submit" class="btn btn-primary btn-md" value="Login"/>
                         </span>
                     </div>
                 }

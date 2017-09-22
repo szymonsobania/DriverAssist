@@ -24,6 +24,7 @@ namespace DriverAssist.Controllers
         [HttpPost]
         public ActionResult Login(string username, string password)
         {
+            Session["LoginError"] = null;
             var httpClient = new HttpClient();
             var values = new Dictionary<string, string>();
             values.Add("Email", username);
@@ -41,9 +42,11 @@ namespace DriverAssist.Controllers
                     Session["token"] = result.Token;
                     return RedirectToAction("Index", "Home");
                 }
-                return RedirectToAction("LoginFailed", "Home");
+                Session["LoginError"] = "Bad email or password.";
+                return RedirectToAction("Index", "Login");
             }
-            return RedirectToAction("Index", "Home");
+            Session["LoginError"] = "Connection error";
+            return RedirectToAction("Index", "Login");
         }
 
         public bool IsLogged()

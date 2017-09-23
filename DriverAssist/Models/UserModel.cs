@@ -13,6 +13,14 @@ namespace DriverAssist.Models
         public string Surname { get; set; }
     }
 
+    public class ActualUser
+    {
+        public string GetUserName
+        {
+            get { return "test"; }
+        }
+    }
+
     public class UserTable
     {
       

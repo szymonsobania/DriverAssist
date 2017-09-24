@@ -32,7 +32,7 @@ namespace DriverAssist.Models
                     {
                         var coords = line.Split(';');
                         Coordinates.Add(new Coordinate { Lat = Double.Parse(coords[0], CultureInfo.InvariantCulture), Lng = Double.Parse(coords[1], CultureInfo.InvariantCulture) });
-                        for (int i = 0; i < 1; i++)  // testy wydajnosciowe :p
+                        for (int i = 0; i < 100; i++)  // testy wydajnosciowe :p
                         {
                             Coordinates.Add(new Coordinate { Lat = Double.Parse(coords[0], CultureInfo.InvariantCulture), Lng = Double.Parse(coords[1], CultureInfo.InvariantCulture) + 0.00001 * i });
                         }

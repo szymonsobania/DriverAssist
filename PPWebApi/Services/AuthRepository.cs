@@ -15,7 +15,6 @@ namespace AuthWebApi.Services
 
         #region httpmethod
 
-#if DEBUG
         private static string ByteArrayToHexString(byte[] Bytes)
         {
             StringBuilder Result = new StringBuilder(Bytes.Length * 2);
@@ -37,7 +36,6 @@ namespace AuthWebApi.Services
             byte[] hash = hashstring.ComputeHash(bytes);
             return ByteArrayToHexString(hash);
         }
-#endif
 
         public LoginResponse LogIn(LogInUser logInUser)
         {

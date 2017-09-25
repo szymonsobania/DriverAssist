@@ -5,14 +5,14 @@
     ViewData["Title"] = "Statistics";
 }
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
 @model DriverAssist.Models.StringObj
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"> </script>
 
 <div id="map" style="height: 300px; height:50%; text-align: center; width: 100%;"></div>
 
 =======
-@model IEnumerable<DriverAssist.Models.Coordinate>
+@*@model IEnumerable<DriverAssist.Models.Coordinate>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"> </script>
 
 <div id="map" style="height: 300px; height:50%; text-align: center; width: 100%;"></div>
@@ -20,7 +20,7 @@
     <button type="submit" class="btn btn-info btn-fill pull-left" onclick="Split()">Split</button>
     <button type="submit" class="btn btn-info btn-fill pull-left" onclick="Test()">Delete</button>
 </div>
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e*@
 
 <div class="content">
     <div class="container-fluid">
@@ -82,12 +82,12 @@
 </div>
 
 
-=======
+@*=======
         </div>
     </div>
 </div>
 
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e*@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 
@@ -108,7 +108,7 @@
     google.charts.load('current', { packages: ['corechart', 'line', 'controls'] });
 
     google.charts.setOnLoadCallback(drawBackgroundColor);
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
     @*@{
     var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
@@ -118,17 +118,17 @@
 
     var model = @Html.Raw(Model.Str);
 
-=======
+@*=======
 
     var model = @Html.Raw(Json.Encode(Model));
 
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e*@
     function drawBackgroundColor() {
         coordinates = new google.visualization.DataTable();
         coordinates.addColumn('number', 'Lat');
         coordinates.addColumn('number', 'Lng');
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
         $.each(model.LocationData,
             function (i, item) {
                 coordinates.addRow([item.Item2, item.Item3]);
@@ -147,23 +147,23 @@
         //alert(sensorData.getNumberOfRows());
         var rangeStart = sensorData.getValue(0, 0);
         var rangeEnd = sensorData.getValue(sensorData.getNumberOfRows()-1, 0);
-=======
-        $.each(model,
-            function(i, item) {
-                coordinates.addRow([item.Lat, item.Lng]);
-            });
+//=======
+//        $.each(model,
+//            function(i, item) {
+//                coordinates.addRow([item.Lat, item.Lng]);
+//            });
 
-        sensorData = new google.visualization.DataTable();
-        sensorData.addColumn('date', 'Date');
-        sensorData.addColumn('number', 'Lng');
-        sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
+//        sensorData = new google.visualization.DataTable();
+//        sensorData.addColumn('date', 'Date');
+//        sensorData.addColumn('number', 'Lng');
+//        sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
 
-        $.each(model,
-            function(i, item) {
-                sensorData.addRow([new Date(2012, 1, 1, 1, i), item.Lng, false]);
-            });
+//        $.each(model,
+//            function(i, item) {
+//                sensorData.addRow([new Date(2012, 1, 1, 1, i), item.Lng, false]);
+//            });
 
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+//>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
         rangeFilter = new google.visualization.ControlWrapper({
             controlType: 'ChartRangeFilter',
             containerId: 'range_filter_div',
@@ -183,15 +183,15 @@
             },
             view: {
                 columns: [0, 1, 2]
-<<<<<<< HEAD
+//<<<<<<< HEAD
             },
             state: {
                 range: {
                     start: rangeStart,
                     end: rangeEnd
                 }
-=======
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+//=======
+//>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
             }
         });
 
@@ -233,11 +233,11 @@
 
         view = new google.visualization.DataView(sensorData);
         dash.draw(view);
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
         updateChart();
-=======
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+//=======
+//>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
     }
 
     function updateChart() {
@@ -270,17 +270,17 @@
 
     function initMap() {
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
         var model = @Html.Raw(Model.Str);
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 11,
             center: new google.maps.LatLng(model.LocationData.m_Item2, model.LocationData.m_Item3)
-=======
+@*=======
         var model = @Html.Raw(Json.Encode(Model));
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 11,
             center: new google.maps.LatLng(model[1].Lat, model[1].Lng)
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e*@
         });
 
         poly = new google.maps.Polyline({
@@ -299,15 +299,15 @@
         });
 
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
         $.each(model.LocationData,
             function(i, item) {
                 latLng = new google.maps.LatLng(item.m_Item2, item.m_Item3);
-=======
-        $.each(model,
-            function(i, item) {
-                latLng = new google.maps.LatLng(item.Lat, item.Lng);
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+//=======
+//        $.each(model,
+//            function(i, item) {
+//                latLng = new google.maps.LatLng(item.Lat, item.Lng);
+//>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
                 poly.getPath().push(latLng);
             });
 
@@ -373,7 +373,7 @@
             markers[i].setMap(map);
         }
     }
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
     function SelectOnChart() {
         if (startRange > endRange ) {
@@ -405,8 +405,8 @@
         }
         selectionPoly.setMap(map);
     }
-=======
->>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+//=======
+//>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
 
     function SelectOnChart() {
         if (startRange > endRange ) {

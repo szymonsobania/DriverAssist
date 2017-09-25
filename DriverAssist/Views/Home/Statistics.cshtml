@@ -4,18 +4,14 @@
 @{
     ViewData["Title"] = "Statistics";
 }
-@model IEnumerable<DriverAssist.Models.Coordinate>
+
+@model DriverAssist.Models.StringObj
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"> </script>
+
 <div id="map" style="height: 300px; height:50%; text-align: center; width: 100%;"></div>
-<
+
 
 <div class="content">
-    <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" data-toggle="tooltip" data-placement="left"
-       style="cursor: pointer;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display:none;"><span class="glyphicon glyphicon-chevron-up"></span></a>
     <div class="container-fluid">
         <div class="row">
             <div class="navbar-header">
@@ -24,90 +20,212 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Sensor Tables</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li><a href="#section1">Accelerometer</a></li>
+                    @*<li><a href="#section1">Accelerometer</a></li>
                     <li><a href="#section2">GPS</a></li>
                     <li><a href="#section3">Magnetometer</a></li>
                     <li><a href="#section4">Gyroscope</a></li>
-                    <li><a href="#section5">Whatever</a></li>
+                    <li><a href="#section5">Whatever</a></li>*@
+                    
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="GPSLat()">GPS: Lat</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="GPSLng()">GPS: Lng</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Accelerometer()">Accelerometer</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Magnetometer()">Magnetometer</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Gyroscope()">Gyroscope</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Whatever()">Whatever</button></li>
                 </ul>
             </div>
         </div>
-        <div id="section1" class="container-fluid">
+        <div>
+            <button type="submit" class="btn btn-info btn-fill pull-left" onclick="Split()">Split</button>
+            <button type="submit" class="btn btn-info btn-fill pull-left" onclick="Delete()">Delete</button>
+        </div>
+        @*<div id="section1" class="container-fluid">
             <h1>Chart</h1>
             <div id="chart_div"></div>
-        </div>
+        </div>*@
         <div id="section2" class="container-fluid">
-            <h1>Accelometer</h1>
+            <h1>Sensor Data</h1>
             <div id="dashboard">
                 <div id="chart_div2"></div>
                 <div id="range_filter_div"></div>
             </div>
         </div>
-        <div id="section3" class="container-fluid">
+        @*<div id="section3" class="container-fluid">
             <h1>Section 3</h1>
-            <p>TestTestTestTestTestTestTest</p>
+            <p>One more chart</p>
         </div>
         <div id="section4" class="container-fluid">
             <h1>Section 4</h1>
-            <p>TestTestTestTestTestTestTest</p>
+            <p>One more chart</p>
+
         </div>
         <div id="section5" class="container-fluid">
             <h1>Section 5</h1>
-            <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
-            <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
-        </div>
+            <p>One more chart</p>
+        </div>*@
     </div>
 </div>
 
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-
-    $('#mytable  tbody tr').click(function () {
-        $(this).addClass('info').siblings().removeClass('info');
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 50) {
-                $('#back-to-top').fadeIn();
-            } else {
-                $('#back-to-top').fadeOut();
-            }
-        });
-        // scroll body to 0px on click
-        $('#back-to-top').click(function () {
-            $('#back-to-top').tooltip('hide');
-            $('.content').animate({
-                scrollTop: 0
-            }, 800);
-            return false;
-        });
-
-        $('#back-to-top').tooltip('show');
-    });
-</script>
-
-<script type="text/javascript">
-
-    // This example creates an interactive map which constructs a polyline based on
-    // user clicks. Note that the polyline only appears once its path property
-    // contains two LatLng coordinates.
-
-
 
     var poly;
+    var selectionPoly;
     var map;
+    var markers = [];
+    var chart;
+    var startRange;
+    var endRange;
+    var secondClick = false;
+    var coordinates;
+    var sensorData;
+    var rangeFilter;
+    var dash;
+    var view;
+
+    google.charts.load('current', { packages: ['corechart', 'line', 'controls'] });
+
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+
+    @*@{
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = Int32.MaxValue;
+    var jsonModel = serializer.Serialize(Model);
+    }*@
+
+    var model = @Html.Raw(Model.Str);
+
+    function drawBackgroundColor() {
+        coordinates = new google.visualization.DataTable();
+        coordinates.addColumn('number', 'Lat');
+        coordinates.addColumn('number', 'Lng');
+
+        $.each(model.LocationData,
+            function (i, item) {
+                coordinates.addRow([item.Item2, item.Item3]);
+            });
+
+        sensorData = new google.visualization.DataTable();
+        sensorData.addColumn('date', 'Date');
+        sensorData.addColumn('number', 'Lng');
+        sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
+
+        $.each(model.LocationData,
+            function (i, item) {
+                //for (var e = 0; e < 40;e++)
+                    sensorData.addRow([new Date(item.Item1), item.Item3, false]);
+            });
+        //alert(sensorData.getNumberOfRows());
+        var rangeStart = sensorData.getValue(0, 0);
+        var rangeEnd = sensorData.getValue(sensorData.getNumberOfRows()-1, 0);
+        rangeFilter = new google.visualization.ControlWrapper({
+            controlType: 'ChartRangeFilter',
+            containerId: 'range_filter_div',
+            options: {
+                format: 'h:mm a',
+                filterColumnIndex: 0,
+                ui: {
+                    chartOptions: {
+                        height: 50,
+                        chartArea: {
+                            width: '75%'
+                        }
+                    },
+                    minRangeSize: 864000, // 86400000ms = 1 day
+                    snapToData: true
+                }
+            },
+            view: {
+                columns: [0, 1, 2]
+            },
+            state: {
+                range: {
+                    start: rangeStart,
+                    end: rangeEnd
+                }
+            }
+        });
+
+        chart = new google.visualization.ChartWrapper({
+            chartType: 'LineChart',
+            containerId: 'chart_div2',
+            options: {
+                // width and chartArea.width should be the same for the filter and chart
+                height: 400,
+                chartArea: {
+                    width: '75%'
+                },
+                view: {
+                    columns: [0, 1]
+                },
+                hAxis: {
+                    gridlines: {
+                        count: -1,
+                        units: {
+                            days: { format: ['MMM dd'] },
+                            hours: { format: ['HH:mm', 'ha'] },
+                        }
+                    },
+                    minorGridlines: {
+                        units: {
+                            hours: { format: ['hh:mm:ss a', 'ha'] },
+                            minutes: { format: ['HH:mm a Z', ':mm'] }
+                        }
+                    }
+                }
+            }
+        });
+
+        dash = new google.visualization.Dashboard(document.getElementById('dashboard'));
+        // bind the chart to the filter
+        dash.bind([rangeFilter], [chart]);
+
+        document.getElementById('range_filter_div').addEventListener("mouseup", updateChart);
+
+        view = new google.visualization.DataView(sensorData);
+        dash.draw(view);
+
+        updateChart();
+    }
+
+    function updateChart() {
+        var rangeLength = 0;
+        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
+            if ((sensorData.getValue(i, 0) >= rangeFilter.getState().range.start) && (sensorData.getValue(i, 0) <= rangeFilter.getState().range.end)) {
+                rangeLength++;
+            }
+        }
+        var modulo = Math.ceil(rangeLength / 500);
+        var visibleRows = [];
+        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
+            if (i % modulo == 0)
+                visibleRows.push(i);
+        }
+        view.setRows(visibleRows);
+        dash.draw(view);
+    };
+
+    function changeRange() {
+        rangeFilter.setState({
+            range: {
+                start: startRange,
+                end: endRange
+            }
+        });
+        rangeFilter.draw();
+        updateChart();
+    }
 
     function initMap() {
 
-        var model = @Html.Raw(Json.Encode(Model));
+        var model = @Html.Raw(Model.Str);
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 8,
-            center: new google.maps.LatLng(model[1].Lat, model[1].Lng)
+            zoom: 11,
+            center: new google.maps.LatLng(model.LocationData.m_Item2, model.LocationData.m_Item3)
         });
 
         poly = new google.maps.Polyline({
@@ -117,209 +235,192 @@
         });
         poly.setMap(map);
 
-        $.each(model, function (i, item) {
-            latLng = new google.maps.LatLng(item.Lat, item.Lng);
+        selectionPoly = new google.maps.Polyline({
+            strokeColor: '#00ff00',
+            strokeOpacity: 1.0,
+            strokeWeight: 5,
+            map: map,
+            path: []
+        });
 
+
+        $.each(model.LocationData,
+            function(i, item) {
+                latLng = new google.maps.LatLng(item.m_Item2, item.m_Item3);
+                poly.getPath().push(latLng);
+            });
+
+
+        google.maps.event.addListener(poly, 'click', function (h) {
+            var latlng = h.latLng;
+            var needle = {
+                minDistance: 9999999999, //silly high
+                index: -1,
+                latlng: null
+            };
+            poly.getPath().forEach(function (routePoint, index) {
+                var dist = google.maps.geometry.spherical.computeDistanceBetween(latlng, routePoint);
+                if (dist < needle.minDistance) {
+                    needle.minDistance = dist;
+                    needle.index = index;
+                    needle.latlng = routePoint;
+                }
+            });
+            // The closest point in the polyline
+            // alert("Closest index: " + needle.index);
             var marker = new google.maps.Marker({
-                position: latLng,
-                title: poly.getPath().getLength().toString(), // tytul jet id, potem po nim zaznaczamy w tabeli
-                map: map
+                position: needle.latlng,
+                title: needle.index.toString(), // title is id
+                map: null
             });
-            poly.getPath().push(latLng);
+            marker.setIcon(
+                'https://lh3.ggpht.com/hx6IeSRualApBd7KZB9s2N7bcHZIjtgr9VEuOxHzpd05_CZ6RxZwehpXCRN-1ps3HuL0g8Wi=w9-h9');
 
-            marker.setIcon('https://lh3.ggpht.com/hx6IeSRualApBd7KZB9s2N7bcHZIjtgr9VEuOxHzpd05_CZ6RxZwehpXCRN-1ps3HuL0g8Wi=w9-h9')
 
-            // put in some information about each json object - in this case, the opening hours.
-            var infowindow = new google.maps.InfoWindow({
-                content: '#' + poly.getPath().getLength()
-            });
+            if (secondClick == false) {
+                startRange = sensorData.getValue(parseInt(marker.title), 0);
+                secondClick = true;
+                DeleteMarkers(markers);
+                markers = [];
 
-            // finally hook up an "OnClick" listener to the map so it pops up out info-window when the marker-pin is clicked!
-            google.maps.event.addListener(marker, 'click', function () {
-                infowindow.open(map, marker);
-                $('#mytable th:nth-child(1)').each(function () {
-                    if (marker.getTitle() == ($(this).html())) {
-                        alert(marker.getTitle());
-                        $(this).parent().addClass('info').siblings().removeClass('info');
-                    }
+                selectionPoly.setMap(null);
+                selectionPoly = new google.maps.Polyline({
+                    strokeColor: '#00ff00',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 5,
+                    map: map,
+                    path: []
                 });
-            });
-            //$(function () { // adding table routeCoordinates
-            //$('#myTable tr:last').after(' <tr><th scope="row">'i.toString()'</th> td>Mark</td> <td>Otto</td>  <td>mdo</td>  </tr>');
-            //$("#mytable").find('tbody')
-            //    .append($('<tr>')
-            //        .append($('<th scope="row">' + i.toString() + '</th>'))
-            //        .append($('<td>' + item.Lat.toString() + '</td>'))
-            //        .append($('<td>' + item.Lng.toString() + '</td>'))
-            //        .append($('</tr>'))
-            //    );
-            // });
-        })
 
-
-
-        // Add a listener for the click event
-        // map.addListener('click', addLatLng);
+            } else {
+                endRange = sensorData.getValue(parseInt(marker.title), 0);
+                secondClick = false;
+                DrawSelectionPoly();
+                SelectOnChart();
+            }
+            markers.push(marker);
+            SetMapOnAll(map, markers);
+        });
     }
 
-    // Handles click events on a map, and adds a new point to the Polyline.
-    function addLatLng(event) {
-        var path = poly.getPath();
+    function DeleteMarkers(markers) {
+        SetMapOnAll(null, markers);
+    }
 
-        // Because path is an MVCArray, we can simply append a new coordinate
-        // and it will automatically appear.
-        path.push(event.latLng);
+    function SetMapOnAll(map, markers) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+        }
+    }
 
-        // Add a new marker at the new plotted point on the polyline.
-        var marker = new google.maps.Marker({
-            position: event.latLng,
-            title: '#' + path.getLength(),
-            map: map
+    function SelectOnChart() {
+        if (startRange > endRange ) {
+            var temp = startRange;
+            startRange = endRange;
+            endRange = temp;
+        }
+        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
+            if ((sensorData.getValue(i, 0) >= startRange) && (sensorData.getValue(i, 0) <= endRange)) {
+                sensorData.setValue(i, 2, true);
+            } else {
+                sensorData.setValue(i, 2, false);
+            }
+        }
+        changeRange();
+    }
+
+    function DrawSelectionPoly() {
+        if (startRange > endRange ) {
+            var temp = startRange;
+            startRange = endRange;
+            endRange = temp;
+        }
+        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
+            if ((sensorData.getValue(i, 0) >= startRange) && (sensorData.getValue(i, 0) <= endRange)) {
+                var latLng = new google.maps.LatLng(coordinates.getValue(i, 0), coordinates.getValue(i, 1));
+                selectionPoly.getPath().push(latLng);
+            }
+        }
+        selectionPoly.setMap(map);
+    }
+
+
+    function GPSLng() {
+        alert("TODO: Podpiac przeladowanie wykresu");
+        // Przykład:
+        sensorData = new google.visualization.DataTable();
+        sensorData.addColumn('date', 'Date'); // To jest nasza data (id)
+        sensorData.addColumn('number', 'Lng'); // To co pokazujemy na wykresie
+        sensorData.addColumn({ type: 'boolean', role: 'emphasis' }); //To jest do zanzaczania na wykresie
+        $.each(model.LocationData,
+            function(i, item) {
+                sensorData.addRow([new Date(item.m_Item1), item.m_Item3, false]);
+            });
+        view = new google.visualization.DataView(sensorData);
+        updateChart();
+        dash.draw(view);
+    }
+
+    function GPSLat() {
+        alert("TODO: Podpiac przeladowanie wykresu");
+        // Przykład:
+        sensorData = new google.visualization.DataTable();
+        sensorData.addColumn('date', 'Date');
+        sensorData.addColumn('number', 'Lat');
+        sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
+        $.each(model.LocationData,
+            function(i, item) {
+                sensorData.addRow([new Date(item.m_Item1), item.m_Item2, false]);
+            });
+        view = new google.visualization.DataView(sensorData);
+        updateChart();
+        dash.draw(view);
+    }
+
+    function Accelerometer() {
+        alert("TODO: Podpiac przeladowanie wykresu");
+    }
+
+    function Magnetometer() {
+        alert("TODO: Podpiac przeladowanie wykresu");
+    }
+
+    function Gyroscope() {
+        alert("TODO: Podpiac przeladowanie wykresu");
+    }
+
+    function Split() {
+        alert("TODO: podpiac do bazy");
+        // Trzeba zduplikowac plik w bazie i z orginalu usnac rekordy o dacie pomiedzy:  startRange; endRange;
+        // a z kopii usunac wszytskie rekordy z wyjatkiem tych o dacie pomiedzy: startRange; endRange;
+
+    }
+
+    function Delete() {
+        GetSensorData("poczatek", "koniec");
+        alert("TODO: podpiac do bazy");
+        // Trzeba usunac z bazy rekordy o dacie pomiedzy:  startRange; endRange;
+    }
+
+    function GetSensorData(start ,end){
+
+        $.ajax({
+            type: "POST",
+            url: "SelectedData" ,
+            data: "&start=" + start + "&end=" + end ,
+            complete: function(data) {
+                //Zdekodowac Jsona do modelu
+                alert(JSON.stringify(data));
+
+            }
         });
     }
 
     google.maps.event.addDomListener(window, 'load', initMap);
-
-
-
 </script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    google.charts.load('current', { packages: ['corechart', 'line', 'controls'] });
-    //google.charts.load('visualization', '1', { packages: ['controls'] });
-    google.charts.setOnLoadCallback(drawBackgroundColor);
-
-    var model = @Html.Raw(Json.Encode(Model));
-    function drawBackgroundColor() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'Lat');
-        data.addColumn('number', 'Lng');
-
-        $.each(model,
-            function (i, item) {
-               // alert(item.Lat.toString());
-                data.addRow([item.Lng, item.Lat]);
-            });
-        //data.addRows([
-        //    [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
-        //    [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
-        //    [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
-        //    [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
-        //    [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
-        //    [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
-        //    [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
-        //    [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
-        //    [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
-        //    [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
-        //    [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
-        //    [66, 70], [67, 72], [68, 75], [69, 80]
-        //]);
-
-        var data2 = new google.visualization.DataTable();
-        data2.addColumn('number', 'Lat');
-        data2.addColumn('number', 'Lng');
-
-        data2.addRows([
-            [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
-            [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
-            [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
-            [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
-            [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53]
-
-        ]);
-
-        var options = {
-            hAxis: {
-                title: 'Time'
-            },
-            vAxis: {
-                title: 'Popularity'
-            },
-            explorer: {
-                keepInBounds: true,
-                    actions: ['dragToZoom', 'rightClickToReset']
-            }
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-
-        google.visualization.events.addListener(chart, 'select', function () {
-            //chart.draw(data2, options);
-        });
-
-        /////////////////////////////////
-        var data3 = new google.visualization.DataTable();
-        data3.addColumn('date', 'Date');
-        data3.addColumn('number', 'Lng');
-
-        // add some random data
-        for (var i = 1; i < 101; i++) {
-            data3.addRow([new Date(2012, 0, i), Math.round(Math.random() * 100)]);
-        }
-
-        var rangeFilter = new google.visualization.ControlWrapper({
-            controlType: 'ChartRangeFilter',
-            containerId: 'range_filter_div',
-            options: {
-                filterColumnIndex: 0,
-                ui: {
-                    chartOptions: {
-                        height: 50,
-                        chartArea: {
-                            width: '75%'
-                        }
-                    },
-                    minRangeSize: 86400000, // 86400000ms = 1 day
-                    snapToData: true
-                }
-            },
-            view: {
-                columns: [0, 1]
-            },
-            state: {
-                range: {
-                    // set the starting range to January 2012
-                    start: new Date(2012, 0, 1),
-                    end: new Date(2012, 0, 31)
-                }
-            }
-        });
-
-        var chart2 = new google.visualization.ChartWrapper({
-            chartType: 'LineChart',
-            containerId: 'chart_div2',
-            options: {
-                // width and chartArea.width should be the same for the filter and chart
-                height: 400,
-                chartArea: {
-                    width: '75%'
-                }
-            }
-        });
-
-        // Create the dashboard
-        var dash = new google.visualization.Dashboard(document.getElementById('dashboard'));
-        // bind the chart to the filter
-        dash.bind([rangeFilter], [chart2]);
-        // draw the dashboard
-        dash.draw(data3);
-    }
-</script>
-@*<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-    <script type="text/javascript">
-
-
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart () {
-
-        }
-    </script>*@
-
 
 @section scripts {
+
     <!--  Google Maps Plugin    -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
     @*<script src="~/assets/js/myJS.js"></script>*@
@@ -328,4 +429,3 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAN2leofGiYu947JXBwlik7Gj0b5hgQ758&callback=initMap">
     </script>
 }
-

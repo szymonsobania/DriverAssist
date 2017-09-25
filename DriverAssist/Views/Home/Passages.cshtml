@@ -3,7 +3,7 @@
 *@
 @{
     ViewData["Title"] = "Passages";
-    @model IList<DriverAssist.Models.PassageModel>
+    @model IList<AuthWebApi.Models.Passage>
 }
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"> </script>
 <script src="~/Scripts/jquery.dataTables.min.js"></script>
@@ -46,7 +46,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home")">
+                    <tr class="clickable-row" data-href="@Url.Action("Statistics", "Home", new {passageId = item.PassageGuid.ToString()})">
                         <td>@item.Passage_ID</td>
                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
                         <td>@item.Time</td>

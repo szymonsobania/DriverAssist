@@ -192,6 +192,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\PassagesController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WebApiController.cs" />
     <Compile Include="Controllers\IntervalsController.cs" />
@@ -214,11 +215,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\GetStatistic.cs" />
     <Compile Include="Models\GetUserToken.cs" />
     <Compile Include="Models\IntervalsResponse.cs" />
     <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\LogInUser.cs" />
     <Compile Include="Models\LogOutUser.cs" />
+    <Compile Include="Models\Passage.cs" />
+    <Compile Include="Models\PassageData.cs" />
     <Compile Include="Models\Reading.cs" />
     <Compile Include="Models\RegisterUser.cs" />
     <Compile Include="Models\Response.cs" />
@@ -232,6 +236,7 @@
     </Compile>
     <Compile Include="Services\AuthRepository.cs" />
     <Compile Include="Services\IntervalsRepository.cs" />
+    <Compile Include="Services\PassagesRepository.cs" />
     <Compile Include="Services\ReadingsRepository.cs" />
     <Compile Include="Services\UserRepository.cs" />
     <Compile Include="Tagi.cs">

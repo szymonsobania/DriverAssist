@@ -13,6 +13,7 @@
         <AssociationConnector Association="PP_testModel.FK_Przejazdy_Uzytkownicy" />
         <AssociationConnector Association="PP_testModel.FK_Tagi_Przejazdy" />
         <AssociationConnector Association="PP_testModel.Przydzialy" />
+        <EntityTypeShape EntityType="PP_testModel.Interwaly" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

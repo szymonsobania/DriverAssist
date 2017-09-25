@@ -140,7 +140,7 @@ namespace AuthWebApi.Services
                 try
                 {
                     List<int> ridesIds = new List<int>();
-                    var file = System.Text.Encoding.Unicode.GetBytes(reading.Content);//Convert.FromBase64String(reading.Content);
+                    var file = Convert.FromBase64String(reading.Content);//System.Text.Encoding.Unicode.GetBytes(reading.Content);
                     string fileName = DateTime.Now.ToString("yyyyMMddHHmmtt") + RandomString(5);
                     string tmpFilePath = string.Format(tmpPath, fileName);
                     File.WriteAllBytes(tmpFilePath, file);
@@ -169,7 +169,7 @@ namespace AuthWebApi.Services
 #if DEBUG
                                 var user = (from u in context.Uzytkownicies select u).FirstOrDefault();
 #else
-                        var user = (from u in context.Uzytkownicies where u.email == userLogins select u).FirstOrDefault();
+                                    var user = (from u in context.Uzytkownicies where u.email == userLogins select u).FirstOrDefault();
 #endif
                                 przejazd.Uzytkownicy = user;
                                 przejazd.id_przejazdu = Guid.NewGuid();
@@ -219,15 +219,13 @@ namespace AuthWebApi.Services
                                     przejazd.id_przejazdu = Guid.NewGuid();
                                     context.Przejazdy_fs.Add(przejazd);
                                     AddTagsToRide(con,context,przejazd);
-                                }
-                                context.SaveChanges();
+                                }                              
                             }
+                            context.SaveChanges();
                         }
                     }
-                            
-
-
-                            File.Delete(tmpFilePath);
+                   
+                    File.Delete(tmpFilePath);
                     return new Response() { Result = "OK" };
                 }
                 catch (Exception e)

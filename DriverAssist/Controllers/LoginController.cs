@@ -14,7 +14,6 @@ namespace DriverAssist.Controllers
 {
     public class LoginController : Controller
     {
-        private static string endPoint = "http://localhost:50236/auth";
         // GET: Login
         public ActionResult Index()
         {
@@ -30,7 +29,7 @@ namespace DriverAssist.Controllers
             values.Add("Email", username);
             values.Add("Password", PasswordHelper.GetHash(password));
             var content = new FormUrlEncodedContent(values);
-            var httpResponseMessage = httpClient.PostAsync(endPoint, content).Result;
+            var httpResponseMessage = httpClient.PostAsync(PPConfig.EndPointAdress + "auth", content).Result;
 
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {

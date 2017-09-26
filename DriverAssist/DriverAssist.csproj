@@ -160,6 +160,7 @@
     <Compile Include="Models\PassageModel.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="PPConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

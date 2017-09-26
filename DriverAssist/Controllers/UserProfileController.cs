@@ -16,7 +16,6 @@ namespace DriverAssist.Controllers
 {
     public class UserProfileController : Controller
     {
-        private static string endPoint = "http://localhost:50236/user";
         // GET: UserProfile
         public ActionResult Index()
         {
@@ -24,7 +23,7 @@ namespace DriverAssist.Controllers
             var values = new Dictionary<string, string>();
             values.Add("token", Session["token"].ToString());
             var content = new FormUrlEncodedContent(values);
-            var httpResponseMessage = httpClient.PostAsync(endPoint, content).Result;
+            var httpResponseMessage = httpClient.PostAsync(PPConfig.EndPointAdress + "user", content).Result;
             UserProfile model = null;
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
@@ -45,7 +44,7 @@ namespace DriverAssist.Controllers
             var values = new Dictionary<string, string>();
             values.Add("token", Session["token"].ToString());
             var content = new FormUrlEncodedContent(values);
-            var httpResponseMessage = httpClient.PostAsync(endPoint, content).Result;
+            var httpResponseMessage = httpClient.PostAsync(PPConfig.EndPointAdress + "user", content).Result;
             UserProfile userProfile = null;
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
@@ -63,7 +62,7 @@ namespace DriverAssist.Controllers
 
             var json = JsonConvert.SerializeObject(userProfile);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var httpResponseMessage2 = httpClient.PutAsync(endPoint, httpContent);
+            var httpResponseMessage2 = httpClient.PutAsync(PPConfig.EndPointAdress + "user", httpContent);
             while (!httpResponseMessage2.IsCompleted) ;
             return RedirectToAction("Index", "Home");
         }

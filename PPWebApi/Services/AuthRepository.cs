@@ -39,7 +39,12 @@ namespace AuthWebApi.Services
 
         public LoginResponse LogIn(LogInUser logInUser)
         {
-            string haslo = GetHash(logInUser.Password);
+            string haslo;
+            if (logInUser.Password.Length < 64)
+                haslo = GetHash(logInUser.Password);
+            else
+                haslo = logInUser.Password;
+
             Uzytkownicy user;
             using(PP_testEntities context = new PP_testEntities())
             {

@@ -25,7 +25,7 @@ namespace AuthWebApi.Services
             return Math.PI * degrees / 180;
         }
 
-        private string RandomString(int size)
+        public static string RandomString(int size)
         {
             StringBuilder builder = new StringBuilder();
             char ch;

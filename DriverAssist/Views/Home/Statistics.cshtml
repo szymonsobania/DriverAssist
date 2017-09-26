@@ -113,11 +113,9 @@
         sensorData.addColumn('number', 'Lng');
         sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
 
-        $.each(model.LocationData,
-            function (i, item) {
-                //for (var e = 0; e < 40;e++)
-                    sensorData.addRow([new Date(item.Item1), item.Item3, false]);
-            });
+        for (i = 0; i < model.LocationLng.length; i++) {
+            sensorData.addRow([new Date(model.LocationTimestamp[i]), model.LocationLng[i], false]);
+        }
         //alert(sensorData.getNumberOfRows());
         var rangeStart = sensorData.getValue(0, 0);
         var rangeEnd = sensorData.getValue(sensorData.getNumberOfRows()-1, 0);
@@ -411,6 +409,16 @@
 
     function Accelerometer() {
         alert("TODO: Podpiac przeladowanie wykresu");
+        sensorData = new google.visualization.DataTable();
+        sensorData.addColumn('date', 'Date');
+        sensorData.addColumn('number', 'Lat');
+        sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
+        for (i = 0; i < model.AccTimestamp.length; i++) {
+            sensorData.addRow([new Date(model.AccTimestamp[i]), model.AccX[i], false]);
+        }
+        view = new google.visualization.DataView(sensorData);
+        updateChart();
+        dash.draw(view);
     }
 
     function Magnetometer() {
@@ -419,6 +427,16 @@
 
     function Gyroscope() {
         alert("TODO: Podpiac przeladowanie wykresu");
+        sensorData = new google.visualization.DataTable();
+        sensorData.addColumn('date', 'Date');
+        sensorData.addColumn('number', 'Lat');
+        sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
+        for (i = 0; i < model.AccTimestamp.length; i++) {
+            sensorData.addRow([new Date(model.GyroTimestamp[i]), model.GyroX[i], false]);
+        }
+        view = new google.visualization.DataView(sensorData);
+        updateChart();
+        dash.draw(view);
     }
 
     function Split() {

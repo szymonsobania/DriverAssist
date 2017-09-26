@@ -80,7 +80,7 @@ namespace AuthWebApi.Services
             {
                 var user = context.Uzytkownicies.First(u => u.email == login);
                 var przejazd = context.Przejazdy_fs.FirstOrDefault(p => p.id_przejazdu == guid);
-                if (przejazd == null || przejazd.id_uzytk != user.id_uzytk) return new PassageData();
+                if (przejazd == null || przejazd.id_uzytk != user.id_uzytk && !user.administrator) return new PassageData();
 
                 string fileName = DateTime.Now.ToString("yyyyMMddHHmmtt") + ReadingsRepository.RandomString(5);
                 string tmpFilePath = Path.Combine(Path.GetTempPath(), fileName);

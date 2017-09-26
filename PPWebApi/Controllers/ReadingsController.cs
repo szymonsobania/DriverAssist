@@ -21,7 +21,7 @@ namespace AuthWebApi.Controllers
         [HttpPost]
         public Response Read(Reading reading)
         {
-            return readingsRepository.Read(reading);
+           return readingsRepository.Read(reading);
         }
     }
 }

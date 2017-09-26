@@ -1,4 +1,4 @@
-﻿@*
+@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -105,37 +105,60 @@
                 if (value == "") {
                     return true;
                 }
+                else if (value.indexOf('>') != -1) {
+                    var split = value.split('>', 2);
+                    var min = 0;
+                    var max = 0;
+
+                    if (split != null) {
+                        min = parseInt(split[1], 10);
+
+                        if (isNaN(min)) {
+                            min = 0;
+                        }
+                    }
+
+                    var qty = parseInt(data[3], 10) || 0;
+
+                    if (min < qty) {
+                        return true;
+                    }
+                    return false;
+
+                }
                 else if (value.indexOf('<') == -1) {
                     var qty = parseInt(data[3], 10) || 0;
                     if (qty == value) {
                         return true;
                     }
-                        return false;
+                    return false;
                 }
-                
-                var split = value.split('<', 2);
+                else {
 
-                var min = 0;
-                var max = 0;
+                    var split = value.split('<', 2);
 
-                if (split != null) {
-                    min = parseInt(split[0], 10);
-                    max = parseInt(split[1], 10);
+                    var min = 0;
+                    var max = 0;
 
-                    if (isNaN(min)) {
-                        min = 0;
+                    if (split != null) {
+                        min = parseInt(split[0], 10);
+                        max = parseInt(split[1], 10);
+
+                        if (isNaN(min)) {
+                            min = 0;
+                        }
+                        if (isNaN(max)) {
+                            max = 0;
+                        }
                     }
-                    if (isNaN(max)) {
-                        max = 0;
+
+                    var qty = parseInt(data[3], 10) || 0;
+
+                    if (min < qty && qty < max) {
+                        return true;
                     }
+                    return false;
                 }
-
-                var qty = parseInt(data[3], 10) || 0;
-
-                if (min < qty && qty < max) {
-                    return true;
-                }
-                return false;
             }
         );
 
@@ -148,6 +171,40 @@
                 if (value == "") {
                     return true;
                 }
+                else if (value.indexOf('>') != -1) {
+                    var split = value.split('>', 2);
+
+                    if (split != null) {
+                        var min = split[1];
+                        var minSplit = min.split(':', 3);
+                        var minHour = parseInt(minSplit[0], 10);
+                        var minMin = parseInt(minSplit[1], 10);
+                        var minSec = parseInt(minSplit[2], 10);
+
+                        if (isNaN(minHour)) {
+                            minHour = 0;
+                            minMin = 0;
+                            minSec = 0;
+                        }
+                    }
+
+                    var qty = data[2];
+                    var qtySplit = qty.split(':', 3);
+                    var qtyHour = parseInt(qtySplit[0], 10);
+                    var qtyMin = parseInt(qtySplit[1], 10);
+                    var qtySec = parseInt(qtySplit[2], 10);
+
+                    if (minHour < qtyHour) {
+                        return true;
+                    }
+                    else if (qtyHour == minHour && qtyMin > minMin) {
+                        return true;
+                    }
+                    else if (qtyHour == minHour && qtyMin == minMin && qtySec > minSec) {
+                        return true;
+                    }
+                    return false;
+                }
                 else if (value.indexOf('<') == -1) {
                     var qty = data[2];
                     if (qty == value) {
@@ -155,54 +212,55 @@
                     }
                     return false;
                 }
+                else {
+                    var split = value.split('<', 2);
 
-                var split = value.split('<', 2);
+                    if (split != null) {
+                        var min = split[0];
+                        var max = split[1];
 
-                if (split != null) {
-                    var min = split[0];
-                    var max = split[1];
+                        var minSplit = min.split(':', 3);
+                        var maxSplit = max.split(':', 3);
 
-                    var minSplit = min.split(':', 3);
-                    var maxSplit = max.split(':', 3);
+                        var minHour = parseInt(minSplit[0], 10);
+                        var minMin = parseInt(minSplit[1], 10);
+                        var minSec = parseInt(minSplit[2], 10);
+                        var maxHour = parseInt(maxSplit[0], 10);
+                        var maxMin = parseInt(maxSplit[1], 10);
+                        var maxSec = parseInt(maxSplit[2], 10);
 
-                    var minHour = parseInt(minSplit[0], 10);
-                    var minMin = parseInt(minSplit[1], 10);
-                    var minSec = parseInt(minSplit[2], 10);
-                    var maxHour = parseInt(maxSplit[0], 10);
-                    var maxMin = parseInt(maxSplit[1], 10);
-                    var maxSec = parseInt(maxSplit[2], 10);
-
-                    if (isNaN(minHour)) {
-                        minHour = 0;
-                        minMin = 0;
-                        minSec = 0;
+                        if (isNaN(minHour)) {
+                            minHour = 0;
+                            minMin = 0;
+                            minSec = 0;
+                        }
                     }
-                }
 
 
-                var qty = data[2];
-                var qtySplit = qty.split(':', 3);
-                var qtyHour = parseInt(qtySplit[0], 10);
-                var qtyMin = parseInt(qtySplit[1], 10);
-                var qtySec = parseInt(qtySplit[2], 10);
+                    var qty = data[2];
+                    var qtySplit = qty.split(':', 3);
+                    var qtyHour = parseInt(qtySplit[0], 10);
+                    var qtyMin = parseInt(qtySplit[1], 10);
+                    var qtySec = parseInt(qtySplit[2], 10);
 
-                if (minHour < qtyHour && qtyHour < maxHour) {
-                    return true;
+                    if (minHour < qtyHour && qtyHour < maxHour) {
+                        return true;
+                    }
+                    else if (qtyHour == maxHour && qtyMin < maxMin && split[0] == "") {
+                        return true;
+                    }
+                    else if ((qtyHour == minHour && qtyMin > minMin) && (qtyHour == maxHour && qtyMin < maxMin)) {
+                        return true;
+                    }
+                    else if (qtyHour == maxHour && qtyMin == maxMin && qtySec < maxSec && split[0] == "") {
+                        return true;
+                    }
+                    else if ((qtyHour == minHour && qtyMin == minMin && qtySec > minSec) && (qtyHour == maxHour && qtyMin == maxMin && qtySec < maxSec)) {
+                        return true;
+                    }
+
+                    return false;
                 }
-                else if (qtyHour == maxHour && qtyMin < maxMin && split[0] == "") {
-                    return true;
-                }
-                else if ((qtyHour == minHour && qtyMin > minMin) && (qtyHour == maxHour && qtyMin < maxMin)) {
-                    return true;
-                }
-                else if (qtyHour == maxHour && qtyMin == maxMin && qtySec < maxSec && split[0] == "") {
-                    return true;
-                }
-                else if ((qtyHour == minHour && qtyMin == minMin && qtySec > minSec) && (qtyHour == maxHour && qtyMin == maxMin && qtySec < maxSec)) {
-                    return true;
-                }
-               
-                return false;
             }
         );
 
@@ -214,6 +272,39 @@
                 if (value == "") {
                     return true;
                 }
+                else if (value.indexOf('>') != -1) {
+                    var split = value.split('>', 2);
+
+                    if (split != null) {
+                        var min = split[1];
+                        var minSplit = min.split('.', 3);
+                        var minDay = parseInt(minSplit[0], 10);
+                        var minMon = parseInt(minSplit[1], 10);
+                        var minYer = parseInt(minSplit[2], 10);
+
+                        if (isNaN(minDay)) {
+                            minDay = 0;
+                            minMon = 0;
+                            minYer = 0;
+                        }
+                    }
+                    var qty = data[1];
+                    var qtySplit = qty.split('.', 3);
+                    var qtyDay = parseInt(qtySplit[0], 10);
+                    var qtyMon = parseInt(qtySplit[1], 10);
+                    var qtyYer = parseInt(qtySplit[2], 10);
+
+                    if (minYer < qtyYer) {
+                        return true;
+                    }
+                    else if (qtyYer == minYer && qtyMon > minMon) {
+                        return true;
+                    }
+                    else if (qtyYer == minYer && qtyMon == minMon && qtyDay > minDay) {
+                        return true;
+                    }
+                    return false;
+                }
                 else if (value.indexOf('<') == -1) {
                     var qty = data[1];
                     if (qty == value) {
@@ -221,54 +312,55 @@
                     }
                     return false;
                 }
+                else {
+                    var split = value.split('<', 2);
 
-                var split = value.split('<', 2);
+                    if (split != null) {
+                        var min = split[0];
+                        var max = split[1];
 
-                if (split != null) {
-                    var min = split[0];
-                    var max = split[1];
+                        var minSplit = min.split('.', 3);
+                        var maxSplit = max.split('.', 3);
 
-                    var minSplit = min.split('.', 3);
-                    var maxSplit = max.split('.', 3);
+                        var minDay = parseInt(minSplit[0], 10);
+                        var minMon = parseInt(minSplit[1], 10);
+                        var minYer = parseInt(minSplit[2], 10);
+                        var maxDay = parseInt(maxSplit[0], 10);
+                        var maxMon = parseInt(maxSplit[1], 10);
+                        var maxYer = parseInt(maxSplit[2], 10);
 
-                    var minDay = parseInt(minSplit[0], 10);
-                    var minMon = parseInt(minSplit[1], 10);
-                    var minYer = parseInt(minSplit[2], 10);
-                    var maxDay = parseInt(maxSplit[0], 10);
-                    var maxMon = parseInt(maxSplit[1], 10);
-                    var maxYer = parseInt(maxSplit[2], 10);
-
-                    if (isNaN(minDay)) {
-                        minDay = 0;
-                        minMon = 0;
-                        minYer = 0;
+                        if (isNaN(minDay)) {
+                            minDay = 0;
+                            minMon = 0;
+                            minYer = 0;
+                        }
                     }
-                }
 
 
-                var qty = data[1];
-                var qtySplit = qty.split('.', 3);
-                var qtyDay = parseInt(qtySplit[0], 10);
-                var qtyMon = parseInt(qtySplit[1], 10);
-                var qtyYer = parseInt(qtySplit[2], 10);
+                    var qty = data[1];
+                    var qtySplit = qty.split('.', 3);
+                    var qtyDay = parseInt(qtySplit[0], 10);
+                    var qtyMon = parseInt(qtySplit[1], 10);
+                    var qtyYer = parseInt(qtySplit[2], 10);
 
-                if (minYer < qtyYer && qtyYer < maxYer) {
-                    return true;
-                }
-                else if (qtyYer == maxYer && qtyMon < maxMon && split[0] == "") {
-                    return true;
-                }
-                else if ((qtyYer == minYer && qtyMon > minMon) && (qtyYer == maxYer && qtyMon < maxMon)) {
-                    return true;
-                }
-                else if (qtyYer == maxYer && qtyMon == maxMon && qtyDay < maxDay && split[0] == "") {
-                    return true;
-                }
-                else if ((qtyYer == minYer && qtyMon == minMon && qtyDay > minDay) && (qtyYer == maxYer && qtyMon == maxMon && qtyDay < maxDay)) {
-                    return true;
-                }
+                    if (minYer < qtyYer && qtyYer < maxYer) {
+                        return true;
+                    }
+                    else if (qtyYer == maxYer && qtyMon < maxMon && split[0] == "") {
+                        return true;
+                    }
+                    else if ((qtyYer == minYer && qtyMon > minMon) && (qtyYer == maxYer && qtyMon < maxMon)) {
+                        return true;
+                    }
+                    else if (qtyYer == maxYer && qtyMon == maxMon && qtyDay < maxDay && split[0] == "") {
+                        return true;
+                    }
+                    else if ((qtyYer == minYer && qtyMon == minMon && qtyDay > minDay) && (qtyYer == maxYer && qtyMon == maxMon && qtyDay < maxDay)) {
+                        return true;
+                    }
 
-                return false;
+                    return false;
+                }
             }
         );
 
@@ -280,6 +372,27 @@
                 if (value == "") {
                     return true;
                 }
+                else if (value.indexOf('>') != -1) {
+                    var split = value.split('>', 2);
+                    var min = 0;
+                    var max = 0;
+
+                    if (split != null) {
+                        min = parseInt(split[1], 10);
+
+                        if (isNaN(min)) {
+                            min = 0;
+                        }
+                    }
+
+                    var qty = parseInt(data[0], 10) || 0;
+
+                    if (min < qty) {
+                        return true;
+                    }
+                    return false;
+
+                }
                 else if (value.indexOf('<') == -1) {
                     var qty = parseInt(data[0], 10) || 0;
                     if (qty == value) {
@@ -287,30 +400,31 @@
                     }
                     return false;
                 }
+                else {
+                    var split = value.split('<', 2);
 
-                var split = value.split('<', 2);
+                    var min = 0;
+                    var max = 0;
 
-                var min = 0;
-                var max = 0;
+                    if (split != null) {
+                        min = parseInt(split[0], 10);
+                        max = parseInt(split[1], 10);
 
-                if (split != null) {
-                    min = parseInt(split[0], 10);
-                    max = parseInt(split[1], 10);
-
-                    if (isNaN(min)) {
-                        min = 0;
+                        if (isNaN(min)) {
+                            min = 0;
+                        }
+                        if (isNaN(max)) {
+                            max = 0;
+                        }
                     }
-                    if (isNaN(max)) {
-                        max = 0;
+
+                    var qty = parseInt(data[0], 10) || 0;
+
+                    if (min < qty && qty < max) {
+                        return true;
                     }
+                    return false;
                 }
-
-                var qty = parseInt(data[0], 10) || 0;
-
-                if (min < qty && qty < max) {
-                    return true;
-                }
-                return false;
             }
         );
 

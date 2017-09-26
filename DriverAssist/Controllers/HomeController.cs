@@ -40,17 +40,30 @@ namespace DriverAssist.Controllers
         {
             ViewBag.Message = "Lista przejazdów";
 
-            var table = PassageTable.GetPassageTable();
+            var table = PassageTable.GetPassageTable(Session["token"]?.ToString());
 
             return View(table);
         }
 
-        public ActionResult Statistics()
+        public ActionResult Statistics(string passageId)
         {
             ViewBag.Message = "Dane przejazdu";
 
-            return View(model.Coordinates);
+            return View(model.GetCoordinates(Session["token"]?.ToString(), passageId));
         }
 
+        public class Zakres
+        {
+            public string start { set; get; }
+            public string end { set; get; }
+        }
+
+        public ActionResult SelectedData(Zakres zakres)
+        {
+            var response = "Zwracam dane od " + zakres.start + " do " + zakres.end;
+
+            //Zwroc dane tak aby w zakresie start end było 500 rekordow, a poza tym zakresem 100 (rowno rozmieszczone)
+            return Json(response);
+        }
     }
 }

@@ -184,41 +184,51 @@ namespace AuthWebApi.Services
                                     string fname = DateTime.Now.ToString("yyyyMMddHHmmtt") + RandomString(5);
                                     string path = string.Format(tmpPath, fname);
                                     File.WriteAllBytes(path, file);
+                                    var przejazd = new Przejazdy_fs();
                                     using (SQLiteConnection con2 = new SQLiteConnection("Data Source=" + path))
                                     {
                                         con2.Open();
                                         string query = "DELETE FROM location_data where RIDE_ID <> " + id.ToString();
-                                        SQLiteCommand cmd = new SQLiteCommand(query, con);
+                                        SQLiteCommand cmd = new SQLiteCommand(query, con2);
                                         cmd.ExecuteNonQuery();
+                                        cmd.Dispose();
 
-                                        query = "DELETE FROM accelometer_data where RIDE_ID <> " + id.ToString();
-                                        cmd = new SQLiteCommand(query, con);
+                                        query = "DELETE FROM accelerometer_data where RIDE_ID <> " + id.ToString();
+                                        cmd = new SQLiteCommand(query, con2);
                                         cmd.ExecuteNonQuery();
+                                        cmd.Dispose();
 
                                         query = "DELETE FROM gyroscope_data where RIDE_ID <> " + id.ToString();
-                                        cmd = new SQLiteCommand(query, con);
+                                        cmd = new SQLiteCommand(query, con2);
                                         cmd.ExecuteNonQuery();
+                                        cmd.Dispose();
 
                                         query = "DELETE FROM light_data where RIDE_ID <> " + id.ToString();
-                                        cmd = new SQLiteCommand(query, con);
+                                        cmd = new SQLiteCommand(query, con2);
                                         cmd.ExecuteNonQuery();
+                                        cmd.Dispose();
 
                                         query = "DELETE FROM ride where _id <> " + id.ToString();
-                                        cmd = new SQLiteCommand(query, con);
+                                        cmd = new SQLiteCommand(query, con2);
                                         cmd.ExecuteNonQuery();
-                                    }
-                                    var przejazd = new Przejazdy_fs();
-                                    przejazd.dane_przejazdu = File.ReadAllBytes(path);
-                                    var userLogins = AuthRepository.GetLogin(reading.AuthToken);
+                                        cmd.Dispose();
+
+                                        var userLogins = AuthRepository.GetLogin(reading.AuthToken);
 #if DEBUG
-                                    var user = (from u in context.Uzytkownicies select u).FirstOrDefault();
+                                        var user = (from u in context.Uzytkownicies select u).FirstOrDefault();
 #else
                                     var user = (from u in context.Uzytkownicies where u.email == userLogins select u).FirstOrDefault();
 #endif
-                                    przejazd.Uzytkownicy = user;
-                                    przejazd.id_przejazdu = Guid.NewGuid();
-                                    context.Przejazdy_fs.Add(przejazd);
-                                    AddTagsToRide(con,context,przejazd);
+                                        przejazd.Uzytkownicy = user;
+                                        przejazd.id_przejazdu = Guid.NewGuid();                                   
+                                        przejazd.dane_przejazdu = Encoding.ASCII.GetBytes(System.DateTime.Now.ToString());
+                                        context.Przejazdy_fs.Add(przejazd);
+                                        AddTagsToRide(con2, context, przejazd);
+                                        con2.Close();
+                                        GC.Collect();
+                                        GC.WaitForPendingFinalizers();
+                                    }
+                                    przejazd.dane_przejazdu = File.ReadAllBytes(path);
                                 }                              
                             }
                             context.SaveChanges();

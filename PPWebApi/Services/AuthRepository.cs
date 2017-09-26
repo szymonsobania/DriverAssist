@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,14 +15,37 @@ namespace AuthWebApi.Services
 
         #region httpmethod
 
+        private static string ByteArrayToHexString(byte[] Bytes)
+        {
+            StringBuilder Result = new StringBuilder(Bytes.Length * 2);
+            string HexAlphabet = "0123456789ABCDEF";
+
+            foreach (byte B in Bytes)
+            {
+                Result.Append(HexAlphabet[(int)(B >> 4)]);
+                Result.Append(HexAlphabet[(int)(B & 0xF)]);
+            }
+
+            return Result.ToString();
+        }
+
+        public static string GetHash(string pass)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(pass);
+            SHA256Managed hashstring = new SHA256Managed();
+            byte[] hash = hashstring.ComputeHash(bytes);
+            return ByteArrayToHexString(hash);
+        }
+
         public LoginResponse LogIn(LogInUser logInUser)
         {
+            string haslo = GetHash(logInUser.Password);
             Uzytkownicy user;
             using(PP_testEntities context = new PP_testEntities())
             {
                 user = (from u in context.Uzytkownicies
-                    where u.email == logInUser.Email && u.haslo == logInUser.Password
-                    select u).FirstOrDefault();
+                    where u.email == logInUser.Email && u.haslo == haslo
+                        select u).FirstOrDefault();
             }
             if (user == null)
                 return new LoginResponse() { Result = "Failed", Reason = "Bad email or password"};
@@ -65,9 +89,9 @@ namespace AuthWebApi.Services
             }
             return new Response() { Result = "OK" };
         }
-        #endregion
+#endregion
 
-        #region Session
+#region Session
 
         public static bool IsTokenExist(string token)
         {
@@ -76,10 +100,12 @@ namespace AuthWebApi.Services
 
         public static string GetLogin(string token)
         {
-            return sessions[token];
+            if (sessions.ContainsKey(token))
+                return sessions[token];
+            return string.Empty;
         }
         
 
-        #endregion
+#endregion
     }
 }

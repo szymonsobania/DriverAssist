@@ -29,5 +29,6 @@ namespace AuthWebApi
         public virtual DbSet<Przejazdy_fs> Przejazdy_fs { get; set; }
         public virtual DbSet<Tagi> Tagis { get; set; }
         public virtual DbSet<Uzytkownicy> Uzytkownicies { get; set; }
+        public virtual DbSet<Interwaly> Interwalies { get; set; }
     }
 }

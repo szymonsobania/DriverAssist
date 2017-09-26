@@ -83,7 +83,7 @@ namespace AuthWebApi.Services
                 if (przejazd == null || przejazd.id_uzytk != user.id_uzytk) return new PassageData();
 
                 string fileName = DateTime.Now.ToString("yyyyMMddHHmmtt") + ReadingsRepository.RandomString(5);
-                string tmpFilePath = Path.Combine(fileName);
+                string tmpFilePath = Path.Combine(Path.GetTempPath(), fileName);
                 File.WriteAllBytes(tmpFilePath, przejazd.dane_przejazdu);
                 var result = _passages[guid];
                 using (var con = new SQLiteConnection("Data Source=" + tmpFilePath))

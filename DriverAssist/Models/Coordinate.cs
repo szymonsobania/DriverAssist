@@ -37,7 +37,7 @@ namespace DriverAssist.Models
                 var httpClient = new HttpClient { Timeout = new TimeSpan(0, 0, 10, 0) };
                 var json = JsonConvert.SerializeObject(pkg);
                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-                var httpResponseMessage = httpClient.PostAsync(@"http://localhost:50236/statistics", httpContent).Result;
+                var httpResponseMessage = httpClient.PostAsync(PPConfig.EndPointAdress + "statistics", httpContent).Result;
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;

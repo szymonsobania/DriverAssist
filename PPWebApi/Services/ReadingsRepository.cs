@@ -14,8 +14,6 @@ namespace AuthWebApi.Services
 {
     public class ReadingsRepository
     {
-        private static string tmpPath = "D:\\PP\\{0}";
-
         private static Random random = new Random((int)DateTime.Now.Ticks);//thanks to McAden
 
         public const int EarthRadiusInMeters = 6371000;
@@ -142,7 +140,7 @@ namespace AuthWebApi.Services
                     List<int> ridesIds = new List<int>();
                     var file = Convert.FromBase64String(reading.Content);//System.Text.Encoding.Unicode.GetBytes(reading.Content);
                     string fileName = DateTime.Now.ToString("yyyyMMddHHmmtt") + RandomString(5);
-                    string tmpFilePath = string.Format(tmpPath, fileName);
+                    string tmpFilePath = Path.Combine(Path.GetTempPath(), fileName);
                     File.WriteAllBytes(tmpFilePath, file);
                     using (SQLiteConnection con = new SQLiteConnection("Data Source="+tmpFilePath))
                     {

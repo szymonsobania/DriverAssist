@@ -29,7 +29,7 @@ namespace DriverAssist.Models
     {
         //public List<Coordinate> Coordinates { get; set; }
 
-        public StringObj GetCoordinates(string authToken, string passageGuid)
+        public PassageData GetCoordinates(string authToken, string passageGuid)
         {
             if (authToken != null)
             {
@@ -40,25 +40,21 @@ namespace DriverAssist.Models
                 var httpResponseMessage = httpClient.PostAsync(@"http://localhost:50236/statistics", httpContent).Result;
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
-//<<<<<<< HEAD
                     string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
                     var result = JsonConvert.DeserializeObject<PassageData>(contents);
-                    return new StringObj {Str = contents};
-//=======
-//                    while ((line = sr.ReadLine()) != null)
-//                    {
-//                        var coords = line.Split(';');
-//                        Coordinates.Add(new Coordinate { Lat = Double.Parse(coords[0], CultureInfo.InvariantCulture), Lng = Double.Parse(coords[1], CultureInfo.InvariantCulture) });
-//                        for (int i = 0; i < 100; i++)  // testy wydajnosciowe :p
-//                        {
-//                            Coordinates.Add(new Coordinate { Lat = Double.Parse(coords[0], CultureInfo.InvariantCulture), Lng = Double.Parse(coords[1], CultureInfo.InvariantCulture) + 0.00001 * i });
-//                        }
-//                    }
-//>>>>>>> 773df4462fb62d81519dcbf1084b73f9efc15d8e
+                    int step = result.LocationTimestamp.Count / 500;
+                    var res = new PassageData();
+                    for (int i = 0; i < result.LocationTimestamp.Count; i += step)
+                    {
+                        res.LocationTimestamp.Add(result.LocationTimestamp[i]);
+                        res.LocationLat.Add(result.LocationLat[i]);
+                        res.LocationLng.Add(result.LocationLng[i]);
+                    }
+                    return res;
                 }
             }
 
-            return new StringObj {Str = ""}; //new PassageData();
+            return new PassageData();
         }
 
         public Model()

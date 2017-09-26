@@ -102,7 +102,9 @@ namespace AuthWebApi.Services
                                 timestamp = rdr.GetInt64(1);
                                 lat = rdr.GetDouble(2);
                                 lng = rdr.GetDouble(3);
-                                result.LocationData.Add(new Tuple<long, double, double>(timestamp, lat, lng));
+                                result.LocationTimestamp.Add(timestamp);
+                                result.LocationLat.Add(lat);
+                                result.LocationLng.Add(lng);
                             }
                         }
                     }
@@ -120,7 +122,10 @@ namespace AuthWebApi.Services
                                 x = rdr.GetDouble(2);
                                 y = rdr.GetDouble(3);
                                 z = rdr.GetDouble(4);
-                                result.AccData.Add(new Tuple<long, double, double, double>(timestamp, x, y, z));
+                                result.AccTimestamp.Add(timestamp);
+                                result.AccX.Add(x);
+                                result.AccY.Add(y);
+                                result.AccZ.Add(z);
                             }
                         }
                     }
@@ -138,7 +143,10 @@ namespace AuthWebApi.Services
                                 x = rdr.GetDouble(2);
                                 y = rdr.GetDouble(3);
                                 z = rdr.GetDouble(4);
-                                result.GyroData.Add(new Tuple<long, double, double, double>(timestamp, x, y, z));
+                                result.GyroTimestamp.Add(timestamp);
+                                result.GyroX.Add(x);
+                                result.GyroY.Add(y);
+                                result.GyroZ.Add(z);
                             }
                         }
                     }
@@ -154,7 +162,8 @@ namespace AuthWebApi.Services
                             {
                                 timestamp = rdr.GetInt64(1);
                                 intensity = rdr.GetDouble(2);
-                                result.LightData.Add(new Tuple<long, double>(timestamp, intensity));
+                                result.LightTimestamp.Add(timestamp);
+                                result.LightIntensity.Add(intensity);
                             }
                         }
                     }

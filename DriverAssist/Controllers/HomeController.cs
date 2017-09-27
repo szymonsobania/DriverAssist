@@ -61,19 +61,28 @@ namespace DriverAssist.Controllers
             public string end { set; get; }
         }
 
-        public ActionResult SelectedData(Zakres zakres)
-        {
-            var response = "Zwracam dane od " + zakres.start + " do " + zakres.end;
+        //public ActionResult SelectedData(Zakres zakres)
+        //{
+        //    var response = "Zwracam dane od " + zakres.start + " do " + zakres.end;
 
-            //Zwroc dane tak aby w zakresie start end było 500 rekordow, a poza tym zakresem 100 (rowno rozmieszczone)
-            return Json(model.UpdateSensorData(long.Parse(zakres.start), long.Parse(zakres.end)));
-        }
+        //    //Zwroc dane tak aby w zakresie start end było 500 rekordow, a poza tym zakresem 100 (rowno rozmieszczone)
+        //    return Json(model.UpdateSensorData(long.Parse(zakres.start), long.Parse(zakres.end)));
+        //}
 
         [HttpPost]
         public ActionResult Delete(Zakres zakres)
         {
-            return Json(model.UpdateSensorData(Session["token"]?.ToString(), Session["passageGuid"]?.ToString(), long.Parse(zakres.start),
-                long.Parse(zakres.end), true));
+            model.UpdateSensorData(Session["token"]?.ToString(), Session["passageGuid"]?.ToString(), long.Parse(zakres.start),
+                long.Parse(zakres.end), true);
+            return Json("OK");
+        }
+
+        [HttpPost]
+        public ActionResult Split(Zakres zakres)
+        {
+            model.UpdateSensorData(Session["token"]?.ToString(), Session["passageGuid"]?.ToString(), long.Parse(zakres.start),
+                long.Parse(zakres.end), false);
+            return Json("OK");
         }
     }
 }

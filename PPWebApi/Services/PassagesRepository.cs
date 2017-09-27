@@ -58,8 +58,9 @@ namespace AuthWebApi.Services
                                 .Select(tag => tag.komentarz).FirstOrDefault()
                         });
                 }
-                result.ForEach((p, i) => p.Passage_ID = i);
-                return result.ToList();
+                var resultList = result.ToList();
+                for (int i = 0; i < resultList.Count; i++) resultList[i].Passage_ID = i + 1;
+                return resultList;
             }
         }
 
@@ -193,7 +194,6 @@ namespace AuthWebApi.Services
                 string fileName = DateTime.Now.ToString("yyyyMMddHHmmtt") + ReadingsRepository.RandomString(5);
                 string tmpFilePath = Path.Combine(Path.GetTempPath(), fileName);
                 File.WriteAllBytes(tmpFilePath, przejazd.dane_przejazdu);
-                var result = new PassageData();
                 using (var con = new SQLiteConnection("Data Source=" + tmpFilePath))
                 {
                     con.Open();
@@ -227,7 +227,101 @@ namespace AuthWebApi.Services
                 File.Delete(tmpFilePath);
                 context.SaveChanges();
 
-                return result;
+                return new PassageData();
+            }
+        }
+
+        public PassageData SplitPassageData(UpdateStatistic stat)
+        {
+            bool tokenExists = AuthRepository.IsTokenExist(stat.Token);
+            //#if DEBUG
+            //            tokenExists = true;
+            //#endif
+            if (!tokenExists || stat.PassageGuid == null) return new PassageData();
+
+            string login = AuthRepository.GetLogin(stat.Token);
+            var guid = new Guid(stat.PassageGuid);
+            using (var context = new PP_testEntities())
+            {
+                var user = context.Uzytkownicies.First(u => u.email == login);
+                var przejazd = context.Przejazdy_fs.FirstOrDefault(p => p.id_przejazdu == guid);
+                if (przejazd == null || przejazd.id_uzytk != user.id_uzytk && !user.administrator) return new PassageData();
+
+                string fileNameInner = DateTime.Now.ToString("yyyyMMddHHmmtt") + ReadingsRepository.RandomString(5);
+                string fileNameOuter = DateTime.Now.ToString("yyyyMMddHHmmtt") + ReadingsRepository.RandomString(5);
+                string tmpFilePathInner = Path.Combine(Path.GetTempPath(), fileNameInner);
+                string tmpFilePathOuter = Path.Combine(Path.GetTempPath(), fileNameOuter);
+                File.WriteAllBytes(tmpFilePathInner, przejazd.dane_przejazdu);
+                File.WriteAllBytes(tmpFilePathOuter, przejazd.dane_przejazdu);
+
+                var nowy_przejazd = new Przejazdy_fs();
+                using (var con = new SQLiteConnection("Data Source=" + tmpFilePathInner))
+                using (var con2 = new SQLiteConnection("Data Source=" + tmpFilePathOuter))
+                {
+                    con.Open();
+                    con2.Open();
+
+                    string query =
+                        $"DELETE FROM location_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    SQLiteCommand cmd = new SQLiteCommand(query, con2);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM accelerometer_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con2);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM gyroscope_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con2);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM light_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con2);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+
+                    query =
+                        $"DELETE FROM location_data where TIMESTAMP < {stat.StartTimestamp} or TIMESTAMP > {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM accelerometer_data where TIMESTAMP < {stat.StartTimestamp} or TIMESTAMP > {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM gyroscope_data where TIMESTAMP < {stat.StartTimestamp} or TIMESTAMP > {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM light_data where TIMESTAMP < {stat.StartTimestamp} or TIMESTAMP > {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    context.Tagis.RemoveRange(context.Tagis.Where(t => t.id_przejazdu == guid));
+                    var repo = new ReadingsRepository();
+                    repo.AddTagsToRide(con2, context, przejazd);
+
+                    nowy_przejazd.id_przejazdu = Guid.NewGuid();
+                    nowy_przejazd.id_pojazdu = przejazd.id_pojazdu;
+                    nowy_przejazd.id_uzytk = przejazd.id_uzytk;
+                    nowy_przejazd.data_przejazdu = przejazd.data_przejazdu;
+                    repo.AddTagsToRide(con, context, nowy_przejazd);
+                }
+                przejazd.dane_przejazdu = File.ReadAllBytes(tmpFilePathOuter);
+                nowy_przejazd.dane_przejazdu = File.ReadAllBytes(tmpFilePathInner);
+                File.Delete(tmpFilePathOuter);
+                File.Delete(tmpFilePathInner);
+                context.Przejazdy_fs.Add(nowy_przejazd);
+                context.SaveChanges();
+
+                return new PassageData();
             }
         }
     }

@@ -47,76 +47,76 @@ namespace DriverAssist.Models
                     string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
                     var result = JsonConvert.DeserializeObject<PassageData>(contents);
                     _sensors = result;
-                    var res = new PassageData();
-                    double step = result.LocationTimestamp.Count / 500.0;
-                    if (step <= 1)
-                    {
-                        res.LocationTimestamp = result.LocationTimestamp;
-                        res.LocationLat = result.LocationLat;
-                        res.LocationLng = result.LocationLng;
-                    }
-                    else
-                    {
-                        for (double i = 0; i < result.LocationTimestamp.Count; i += step)
-                        {
-                            res.LocationTimestamp.Add(result.LocationTimestamp[(int)i]);
-                            res.LocationLat.Add(result.LocationLat[(int)i]);
-                            res.LocationLng.Add(result.LocationLng[(int)i]);
-                        }
-                    }
+                    //var res = new PassageData();
+                    //double step = result.LocationTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.LocationTimestamp = result.LocationTimestamp;
+                    //    res.LocationLat = result.LocationLat;
+                    //    res.LocationLng = result.LocationLng;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.LocationTimestamp.Count; i += step)
+                    //    {
+                    //        res.LocationTimestamp.Add(result.LocationTimestamp[(int)i]);
+                    //        res.LocationLat.Add(result.LocationLat[(int)i]);
+                    //        res.LocationLng.Add(result.LocationLng[(int)i]);
+                    //    }
+                    //}
                     
-                    step = result.AccTimestamp.Count / 500.0;
-                    if (step <= 1)
-                    {
-                        res.AccTimestamp = result.AccTimestamp;
-                        res.AccX = result.AccX;
-                        res.AccY = result.AccY;
-                        res.AccZ = result.AccZ;
-                    }
-                    else
-                    {
-                        for (double i = 0; i < result.AccTimestamp.Count; i += step)
-                        {
-                            res.AccTimestamp.Add(result.AccTimestamp[(int)i]);
-                            res.AccX.Add(result.AccX[(int)i]);
-                            res.AccY.Add(result.AccY[(int)i]);
-                            res.AccZ.Add(result.AccZ[(int)i]);
-                        }
-                    }
+                    //step = result.AccTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.AccTimestamp = result.AccTimestamp;
+                    //    res.AccX = result.AccX;
+                    //    res.AccY = result.AccY;
+                    //    res.AccZ = result.AccZ;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.AccTimestamp.Count; i += step)
+                    //    {
+                    //        res.AccTimestamp.Add(result.AccTimestamp[(int)i]);
+                    //        res.AccX.Add(result.AccX[(int)i]);
+                    //        res.AccY.Add(result.AccY[(int)i]);
+                    //        res.AccZ.Add(result.AccZ[(int)i]);
+                    //    }
+                    //}
 
-                    step = result.GyroTimestamp.Count / 500.0;
-                    if (step <= 1)
-                    {
-                        res.GyroTimestamp = result.GyroTimestamp;
-                        res.GyroX = result.GyroX;
-                        res.GyroY = result.GyroY;
-                        res.GyroZ = result.GyroZ;
-                    }
-                    else
-                    {
-                        for (double i = 0; i < result.GyroTimestamp.Count; i += step)
-                        {
-                            res.GyroTimestamp.Add(result.GyroTimestamp[(int)i]);
-                            res.GyroX.Add(result.GyroX[(int)i]);
-                            res.GyroY.Add(result.GyroY[(int)i]);
-                            res.GyroZ.Add(result.GyroZ[(int)i]);
-                        }
-                    }
+                    //step = result.GyroTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.GyroTimestamp = result.GyroTimestamp;
+                    //    res.GyroX = result.GyroX;
+                    //    res.GyroY = result.GyroY;
+                    //    res.GyroZ = result.GyroZ;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.GyroTimestamp.Count; i += step)
+                    //    {
+                    //        res.GyroTimestamp.Add(result.GyroTimestamp[(int)i]);
+                    //        res.GyroX.Add(result.GyroX[(int)i]);
+                    //        res.GyroY.Add(result.GyroY[(int)i]);
+                    //        res.GyroZ.Add(result.GyroZ[(int)i]);
+                    //    }
+                    //}
 
-                    step = result.LightTimestamp.Count / 500.0;
-                    if (step <= 1)
-                    {
-                        res.LightTimestamp = result.LightTimestamp;
-                        res.LightIntensity = result.LightIntensity;
-                    }
-                    else
-                    {
-                        for (double i = 0; i < result.LightTimestamp.Count; i += step)
-                        {
-                            res.LightTimestamp.Add(result.LightTimestamp[(int)i]);
-                            res.LightIntensity.Add(result.LightIntensity[(int)i]);
-                        }
-                    }
+                    //step = result.LightTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.LightTimestamp = result.LightTimestamp;
+                    //    res.LightIntensity = result.LightIntensity;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.LightTimestamp.Count; i += step)
+                    //    {
+                    //        res.LightTimestamp.Add(result.LightTimestamp[(int)i]);
+                    //        res.LightIntensity.Add(result.LightIntensity[(int)i]);
+                    //    }
+                    //}
                     return result;
                 }
             }
@@ -124,7 +124,7 @@ namespace DriverAssist.Models
             return new PassageData();
         }
 
-        public PassageData UpdateSensorData(string authToken, string passageGuid, long start, long end, bool delete)
+        public void UpdateSensorData(string authToken, string passageGuid, long start, long end, bool delete)
         {
             if (authToken != null)
             {
@@ -140,15 +140,13 @@ namespace DriverAssist.Models
                 var json = JsonConvert.SerializeObject(pkg);
                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
                 var httpResponseMessage = httpClient.PostAsync(PPConfig.EndPointAdress + "updatestat", httpContent).Result;
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                {
-                    string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
-                    var result = JsonConvert.DeserializeObject<PassageData>(contents);
-                    return result;
-                }
+                //if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                //{
+                //    string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                //    var result = JsonConvert.DeserializeObject<PassageData>(contents);
+                //    return result;
+                //}
             }
-
-            return new PassageData();
         }
 
         public Model()

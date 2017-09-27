@@ -455,9 +455,18 @@
     }
 
     function Split() {
-        alert("TODO: podpiac do bazy");
-        // Trzeba zduplikowac plik w bazie i z orginalu usnac rekordy o dacie pomiedzy:  startRange; endRange;
-        // a z kopii usunac wszytskie rekordy z wyjatkiem tych o dacie pomiedzy: startRange; endRange;
+        alert("TODO: podpiac do bazy" +
+            "Wyciac dane o timestampie z zakresu od :" +
+            startRange.getTime() + " do " + endRange.getTime());
+        $.ajax({
+            type: "POST",
+            url: "Split",
+            data: "&start=" + startRange.getTime() + "&end=" + endRange.getTime(),
+            complete: function (data) {
+                //Zdekodowac Jsona do modelu
+                location.reload(true);
+            }
+        });
 
     }
 
@@ -472,7 +481,7 @@
             data: "&start=" + startRange.getTime() + "&end=" + endRange.getTime(),
             complete: function (data) {
                 //Zdekodowac Jsona do modelu
-                alert(data.responseText);
+                location.reload(true);
             }
         });
         // Trzeba usunac z bazy rekordy o dacie pomiedzy:  startRange; endRange;

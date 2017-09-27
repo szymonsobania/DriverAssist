@@ -37,7 +37,7 @@ namespace AuthWebApi.Controllers
         {
             if (stat.Delete)
                 return repository.DeletePassageData(stat);
-            return repository.DeletePassageData(stat);
+            return repository.SplitPassageData(stat);
         }
     }
 }

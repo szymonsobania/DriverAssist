@@ -5,40 +5,38 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-5">
-                <div class="card">
+            <div class="col-md-12">
+                
                     <div class="header">
-                        <h4 class="title">Ostatni przejazd</h4>
-                        <p class="category">Trasa: Katowice - Gdańsk</p>
-                        <p class="category">Czas przejazdu: 2h 45m</p>
-                    </div>
-                    <div class="content">
-                       
-                        <div id="chart_div" style="width: 380px; height: 120px;"></div>
-                        </br></br>
-                        <div id="fuel_chart" style="width: 380px; height: 120px;"></div>
-
-                        <div class="footer">
-                            <hr>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="header">
-                        <h4 class="title">Mapa przejazdu</h4>
-                    </div>
-                    <div class="content">
-                      
+                        <h1 class="title">Witaj w serwisie!</h1>
                         
+                    </div>
+                 <div class="alert alert-info">
+                     <div class="media">
+                         <div class="media-left">
+                             <img src="~/img/avatar.png" class="media-object" style="width:60px">
+                         </div>
+                         <div class="media-body">
+                             <h4 class="media-heading"><a href="@Url.Action("Index", "Login")" class="alert-link">Zaloguj się!</a></h4>
+                             <p>Aby uzyskac mozliwosc przegladania swoich przejazdow, musisz byc zalogowany.</p>
+                         </div>
+                     </div>
+                 </div>
 
-                        <div class="footer">
-                            <hr>
+                <div class="alert alert-success">
+                    <div class="media">
+                         <div class="media-left">
+                             <img src="~/img/avatar2.png" class="media-object" style="width:60px">
+                           </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Brawo! Zalogowales sie!</h4>
+                            <p>Teraz mozesz przegladac swoje<a href="@Url.Action("Passages", "Home")" class="alert-link"> przejazdy.</a> </p>
                         </div>
                     </div>
                 </div>
+                
             </div>
+           
         </div>
     </div>
 
@@ -46,63 +44,6 @@
 </div>
 
 
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript">
-    google.load("visualization", "1", { packages: ['controls', 'corechart'] });
-    google.setOnLoadCallback(drawChart);
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Czas', 'Spalanie'],
-            ['0', 0,],
-            ['30', 3.5,],
-            ['1h', 9.8,],
-            ['1,5h', 10,],
-            ['2h', 12.75,],
-            ['2,5h', 11.5],
-            ['2h 45m', 10.5]
-        ]);
-
-        var options = {
-            title: 'Fuel Consumption'
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('fuel_chart'));
-        chart.draw(data, options);
-    }
-</script>
-
-
-
-
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    google.charts.load('current', { 'packages': ['gauge', 'corechart'] });
-    google.charts.setOnLoadCallback(drawChart);
-   
-
-    function drawChart() {
-
-        var data = google.visualization.arrayToDataTable([
-            ['Label', 'Value'],
-            ['Min Speed', 5 ],
-            ['Med Speed', 70],
-            ['Max Speed', 147]
-        ]);
-
-        var options = {
-            width: 400, height: 120,
-            redFrom: 140, redTo: 200,
-            yellowFrom: 100, yellowTo: 140,
-            minorTicks: 10,
-            max: 200
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
-
-        chart.draw(data, options);
-
-    }
-</script>
 
 
 

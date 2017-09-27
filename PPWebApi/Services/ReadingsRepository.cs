@@ -180,7 +180,7 @@ namespace AuthWebApi.Services
                                 foreach (var id in ridesIds)
                                 {
                                     string fname = DateTime.Now.ToString("yyyyMMddHHmmtt") + RandomString(5);
-                                    string path = Path.Combine(Path.GetTempPath(), fileName);
+                                    string path = Path.Combine(Path.GetTempPath(), fname);
                                     File.WriteAllBytes(path, file);
                                     var przejazd = new Przejazdy_fs();
                                     using (SQLiteConnection con2 = new SQLiteConnection("Data Source=" + path))

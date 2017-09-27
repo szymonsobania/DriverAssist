@@ -24,17 +24,20 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     @*<li><a href="#section1">Accelerometer</a></li>
-                    <li><a href="#section2">GPS</a></li>
-                    <li><a href="#section3">Magnetometer</a></li>
-                    <li><a href="#section4">Gyroscope</a></li>
-                    <li><a href="#section5">Whatever</a></li>*@
-                    
+                        <li><a href="#section2">GPS</a></li>
+                        <li><a href="#section3">Magnetometer</a></li>
+                        <li><a href="#section4">Gyroscope</a></li>
+                        <li><a href="#section5">Whatever</a></li>*@
+
                     <li> <button type="submit" class="btn btn-info pull-left" onclick="GPSLat()">GPS: Lat</button></li>
                     <li> <button type="submit" class="btn btn-info pull-left" onclick="GPSLng()">GPS: Lng</button></li>
-                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Accelerometer()">Accelerometer</button></li>
-                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Magnetometer()">Magnetometer</button></li>
-                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Gyroscope()">Gyroscope</button></li>
-                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Whatever()">Whatever</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Accelerometer('X')">Accelerometer: X Axis</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Accelerometer('Y')">Accelerometer: Y Axis</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Accelerometer('Z')">Accelerometer: Z Axis</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Gyroscope('X')">Gyroscope: X Axis</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Gyroscope('Y')">Gyroscope: Y Axis</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="Gyroscope('Z')">Gyroscope: Z Axis</button></li>
+                    <li> <button type="submit" class="btn btn-info pull-left" onclick="LightSensor()">Light Intensity</button></li>
                 </ul>
             </div>
         </div>
@@ -43,9 +46,9 @@
             <button type="submit" class="btn btn-info btn-fill pull-left" onclick="Delete()">Delete</button>
         </div>
         @*<div id="section1" class="container-fluid">
-            <h1>Chart</h1>
-            <div id="chart_div"></div>
-        </div>*@
+                <h1>Chart</h1>
+                <div id="chart_div"></div>
+            </div>*@
         <div id="section2" class="container-fluid">
             <h1>Sensor Data</h1>
             <div id="dashboard">
@@ -54,18 +57,18 @@
             </div>
         </div>
         @*<div id="section3" class="container-fluid">
-            <h1>Section 3</h1>
-            <p>One more chart</p>
-        </div>
-        <div id="section4" class="container-fluid">
-            <h1>Section 4</h1>
-            <p>One more chart</p>
+                <h1>Section 3</h1>
+                <p>One more chart</p>
+            </div>
+            <div id="section4" class="container-fluid">
+                <h1>Section 4</h1>
+                <p>One more chart</p>
 
-        </div>
-        <div id="section5" class="container-fluid">
-            <h1>Section 5</h1>
-            <p>One more chart</p>
-        </div>*@
+            </div>
+            <div id="section5" class="container-fluid">
+                <h1>Section 5</h1>
+                <p>One more chart</p>
+            </div>*@
     </div>
 </div>
 
@@ -90,23 +93,16 @@
 
     google.charts.setOnLoadCallback(drawBackgroundColor);
 
-    @*@{
-    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-    serializer.MaxJsonLength = Int32.MaxValue;
-    var jsonModel = serializer.Serialize(Model);
-    }*@
+    @{
+        var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+        serializer.MaxJsonLength = Int32.MaxValue;
+        var jsonModel = serializer.Serialize(Model);
+    }
 
-    var model = @Html.Raw(Json.Encode(Model));
+    @*var model = @Html.Raw(Json.Encode(Model));*@
+    var model = @Html.Raw(jsonModel);
 
     function drawBackgroundColor() {
-        coordinates = new google.visualization.DataTable();
-        coordinates.addColumn('number', 'Lat');
-        coordinates.addColumn('number', 'Lng');
-
-        $.each(model.LocationData,
-            function (i, item) {
-                coordinates.addRow([item.Item2, item.Item3]);
-            });
 
         sensorData = new google.visualization.DataTable();
         sensorData.addColumn('date', 'Date');
@@ -132,7 +128,7 @@
                             width: '75%'
                         }
                     },
-                    minRangeSize: 864000, // 86400000ms = 1 day
+                    minRangeSize: 10000, // milliseconds = 10 sec
                     snapToData: true
                 }
             },
@@ -183,10 +179,39 @@
 
         document.getElementById('range_filter_div').addEventListener("mouseup", updateChart);
 
+        google.visualization.events.addListener(chart, 'select', chartSelectionEvent);
+
         view = new google.visualization.DataView(sensorData);
         dash.draw(view);
         updateChart();
     }
+
+    function chartSelectionEvent() {
+        var selection = chart.getChart().getSelection();
+        var selectedtime = chart.getDataTable().getValue(selection[0].row, 0);
+
+        if (secondClick == false) {
+            startRange = selectedtime;
+            secondClick = true;
+            DeleteMarkers(markers);
+            markers = [];
+
+            selectionPoly.setMap(null);
+            selectionPoly = new google.maps.Polyline({
+                strokeColor: '#00ff00',
+                strokeOpacity: 1.0,
+                strokeWeight: 5,
+                map: map,
+                path: []
+            });
+
+        } else {
+            endRange = selectedtime;
+            secondClick = false;
+            DrawSelectionPoly();
+            SelectOnChart();
+        }
+    };
 
     function updateChart() {
         var rangeLength = 0;
@@ -195,6 +220,7 @@
                 rangeLength++;
             }
         }
+        //alert("zanzaczony obszar:" + rangeLength);
         var modulo = Math.ceil(rangeLength / 500);
         var visibleRows = [];
         for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
@@ -203,6 +229,7 @@
         }
         view.setRows(visibleRows);
         dash.draw(view);
+        //alert(sensorData.getNumberOfRows());
     };
 
     function changeRange() {
@@ -218,7 +245,8 @@
 
     function initMap() {
 
-        var model = @Html.Raw(Json.Encode(Model));
+        @*var model = @Html.Raw(Json.Encode(Model));*@
+        var model = @Html.Raw(jsonModel);
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 11,
             center: new google.maps.LatLng(model.LocationLat[1], model.LocationLng[1])
@@ -273,7 +301,7 @@
 
 
             if (secondClick == false) {
-                startRange = sensorData.getValue(parseInt(marker.title), 0);
+                startRange = new Date(model.LocationTimestamp[needle.index]);
                 secondClick = true;
                 DeleteMarkers(markers);
                 markers = [];
@@ -288,7 +316,7 @@
                 });
 
             } else {
-                endRange = sensorData.getValue(parseInt(marker.title), 0);
+                endRange = new Date(model.LocationTimestamp[needle.index]);
                 secondClick = false;
                 DrawSelectionPoly();
                 SelectOnChart();
@@ -308,36 +336,6 @@
         }
     }
 
-    function SelectOnChart() {
-        if (startRange > endRange ) {
-            var temp = startRange;
-            startRange = endRange;
-            endRange = temp;
-        }
-        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
-            if ((sensorData.getValue(i, 0) >= startRange) && (sensorData.getValue(i, 0) <= endRange)) {
-                sensorData.setValue(i, 2, true);
-            } else {
-                sensorData.setValue(i, 2, false);
-            }
-        }
-        changeRange();
-    }
-
-    function DrawSelectionPoly() {
-        if (startRange > endRange ) {
-            var temp = startRange;
-            startRange = endRange;
-            endRange = temp;
-        }
-        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
-            if ((sensorData.getValue(i, 0) >= startRange) && (sensorData.getValue(i, 0) <= endRange)) {
-                var latLng = new google.maps.LatLng(coordinates.getValue(i, 0), coordinates.getValue(i, 1));
-                selectionPoly.getPath().push(latLng);
-            }
-        }
-        selectionPoly.setMap(map);
-    }
 
     function SelectOnChart() {
         if (startRange > endRange ) {
@@ -347,23 +345,24 @@
         }
         for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
             if ((sensorData.getValue(i, 0) >= startRange) && (sensorData.getValue(i, 0) <= endRange)) {
-                sensorData.setValue(i, 2, true);
+                sensorData.setValue(i, 2, true);  // ustawimay pogróbienie zanzaczonego obszaru na wykresie
             } else {
-                sensorData.setValue(i, 2, false);
+                sensorData.setValue(i, 2, false); // bez pogróbienia
             }
         }
         changeRange();
     }
 
     function DrawSelectionPoly() {
-        if (startRange > endRange ) {
+
+        if (startRange > endRange) {
             var temp = startRange;
             startRange = endRange;
             endRange = temp;
         }
-        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
-            if ((sensorData.getValue(i, 0) >= startRange) && (sensorData.getValue(i, 0) <= endRange)) {
-                var latLng = new google.maps.LatLng(coordinates.getValue(i, 0), coordinates.getValue(i, 1));
+        for (var i = 0; i < model.LocationTimestamp.length; i++) {
+            if ((model.LocationTimestamp[i] >= startRange) && (model.LocationTimestamp[i] <= endRange)) {
+                var latLng = new google.maps.LatLng(model.LocationLat[i], model.LocationLng[i]);
                 selectionPoly.getPath().push(latLng);
             }
         }
@@ -376,9 +375,9 @@
 
     google.maps.event.addDomListener(window, 'load', initMap);
 </script>
+
 <script>
     function GPSLng() {
-        alert("TODO: Podpiac przeladowanie wykresu");
         // Przykład:
         sensorData = new google.visualization.DataTable();
         sensorData.addColumn('date', 'Date'); // To jest nasza data (id)
@@ -393,7 +392,6 @@
     }
 
     function GPSLat() {
-        alert("TODO: Podpiac przeladowanie wykresu");
         // Przykład:
         sensorData = new google.visualization.DataTable();
         sensorData.addColumn('date', 'Date');
@@ -407,32 +405,49 @@
         dash.draw(view);
     }
 
-    function Accelerometer() {
-        alert("TODO: Podpiac przeladowanie wykresu");
+    function Accelerometer(axis) {
         sensorData = new google.visualization.DataTable();
         sensorData.addColumn('date', 'Date');
-        sensorData.addColumn('number', 'Lat');
+        sensorData.addColumn('number', 'Acc');
         sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
         for (i = 0; i < model.AccTimestamp.length; i++) {
-            sensorData.addRow([new Date(model.AccTimestamp[i]), model.AccX[i], false]);
+            if (axis === 'X')
+                sensorData.addRow([new Date(model.AccTimestamp[i]), model.AccX[i], false]);
+            else if (axis === 'Y')
+                sensorData.addRow([new Date(model.AccTimestamp[i]), model.AccY[i], false]);
+            else
+                sensorData.addRow([new Date(model.AccTimestamp[i]), model.AccZ[i], false]);
         }
         view = new google.visualization.DataView(sensorData);
         updateChart();
         dash.draw(view);
     }
 
-    function Magnetometer() {
-        alert("TODO: Podpiac przeladowanie wykresu");
-    }
-
-    function Gyroscope() {
-        alert("TODO: Podpiac przeladowanie wykresu");
+    function LightSensor() {
         sensorData = new google.visualization.DataTable();
         sensorData.addColumn('date', 'Date');
-        sensorData.addColumn('number', 'Lat');
+        sensorData.addColumn('number', 'Light');
+        sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
+        for (i = 0; i < model.LightTimestamp.length; i++) {
+            sensorData.addRow([new Date(model.LightTimestamp[i]), model.LightIntensity[i], false]);
+        }
+        view = new google.visualization.DataView(sensorData);
+        updateChart();
+        dash.draw(view);
+    }
+
+    function Gyroscope(axis) {
+        sensorData = new google.visualization.DataTable();
+        sensorData.addColumn('date', 'Date');
+        sensorData.addColumn('number', 'Gyro');
         sensorData.addColumn({ type: 'boolean', role: 'emphasis' });
         for (i = 0; i < model.AccTimestamp.length; i++) {
-            sensorData.addRow([new Date(model.GyroTimestamp[i]), model.GyroX[i], false]);
+            if (axis === 'X')
+                sensorData.addRow([new Date(model.GyroTimestamp[i]), model.GyroX[i], false]);
+            else if (axis === 'Y')
+                sensorData.addRow([new Date(model.GyroTimestamp[i]), model.GyroY[i], false]);
+            else
+                sensorData.addRow([new Date(model.GyroTimestamp[i]), model.GyroZ[i], false]);
         }
         view = new google.visualization.DataView(sensorData);
         updateChart();
@@ -447,21 +462,31 @@
     }
 
     function Delete() {
-        GetSensorData("poczatek", "koniec");
-        alert("TODO: podpiac do bazy");
+
+        alert("TODO: podpiac do bazy" +
+            "Usunac dane o timestampie z zakresu od :" +
+            startRange.getTime() + " do " + endRange.getTime());
+        $.ajax({
+            type: "POST",
+            url: "Delete",
+            data: "&start=" + startRange.getTime() + "&end=" + endRange.getTime(),
+            complete: function (data) {
+                //Zdekodowac Jsona do modelu
+                alert(data.responseText);
+            }
+        });
         // Trzeba usunac z bazy rekordy o dacie pomiedzy:  startRange; endRange;
     }
 
-    function GetSensorData(start ,end){
+    function GetSensorData(start, end) {
 
         $.ajax({
             type: "POST",
-            url: "SelectedData" ,
-            data: "&start=" + start + "&end=" + end ,
-            complete: function(data) {
+            url: "SelectedData",
+            data: "&start=" + start + "&end=" + end,
+            complete: function (data) {
                 //Zdekodowac Jsona do modelu
                 alert(JSON.stringify(data));
-
             }
         });
     }

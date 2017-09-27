@@ -69,7 +69,7 @@ namespace AuthWebApi.Services
             //#if DEBUG
             //            tokenExists = true;
             //#endif
-            if (!tokenExists) return new PassageData();
+            if (!tokenExists || passageGuid == null) return new PassageData();
 
             string login = AuthRepository.GetLogin(authToken);
             var guid = new Guid(passageGuid);
@@ -169,6 +169,63 @@ namespace AuthWebApi.Services
                     }
                 }
                 File.Delete(tmpFilePath);
+
+                return result;
+            }
+        }
+
+        public PassageData DeletePassageData(UpdateStatistic stat)
+        {
+            bool tokenExists = AuthRepository.IsTokenExist(stat.Token);
+            //#if DEBUG
+            //            tokenExists = true;
+            //#endif
+            if (!tokenExists || stat.PassageGuid == null) return new PassageData();
+
+            string login = AuthRepository.GetLogin(stat.Token);
+            var guid = new Guid(stat.PassageGuid);
+            using (var context = new PP_testEntities())
+            {
+                var user = context.Uzytkownicies.First(u => u.email == login);
+                var przejazd = context.Przejazdy_fs.FirstOrDefault(p => p.id_przejazdu == guid);
+                if (przejazd == null || przejazd.id_uzytk != user.id_uzytk && !user.administrator) return new PassageData();
+
+                string fileName = DateTime.Now.ToString("yyyyMMddHHmmtt") + ReadingsRepository.RandomString(5);
+                string tmpFilePath = Path.Combine(Path.GetTempPath(), fileName);
+                File.WriteAllBytes(tmpFilePath, przejazd.dane_przejazdu);
+                var result = new PassageData();
+                using (var con = new SQLiteConnection("Data Source=" + tmpFilePath))
+                {
+                    con.Open();
+
+                    string query =
+                        $"DELETE FROM location_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    SQLiteCommand cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM accelerometer_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM gyroscope_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    query = $"DELETE FROM light_data where TIMESTAMP >= {stat.StartTimestamp} and TIMESTAMP <= {stat.EndTimestamp}";
+                    cmd = new SQLiteCommand(query, con);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    context.Tagis.RemoveRange(context.Tagis.Where(t => t.id_przejazdu == guid));
+                    var repo = new ReadingsRepository();
+                    repo.AddTagsToRide(con, context, przejazd);
+                }
+                przejazd.dane_przejazdu = File.ReadAllBytes(tmpFilePath);
+                File.Delete(tmpFilePath);
+                context.SaveChanges();
 
                 return result;
             }

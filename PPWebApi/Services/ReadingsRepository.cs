@@ -36,7 +36,7 @@ namespace AuthWebApi.Services
             return builder.ToString();
         }
 
-        private void AddTagsToRide(SQLiteConnection con, PP_testEntities context, Przejazdy_fs przejazd)
+        public void AddTagsToRide(SQLiteConnection con, PP_testEntities context, Przejazdy_fs przejazd)
         {
             long time = 0;
             double vmax = 0;

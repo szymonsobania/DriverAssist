@@ -7,7 +7,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
+using Antlr.Runtime.Tree;
 using AuthWebApi.Models;
+using DriverAssist.Controllers;
 using Newtonsoft.Json;
 
 namespace DriverAssist.Models
@@ -29,6 +31,8 @@ namespace DriverAssist.Models
     {
         //public List<Coordinate> Coordinates { get; set; }
 
+        private PassageData _sensors = new PassageData();
+
         public PassageData GetCoordinates(string authToken, string passageGuid)
         {
             if (authToken != null)
@@ -42,6 +46,7 @@ namespace DriverAssist.Models
                 {
                     string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
                     var result = JsonConvert.DeserializeObject<PassageData>(contents);
+                    _sensors = result;
                     var res = new PassageData();
                     double step = result.LocationTimestamp.Count / 500.0;
                     if (step <= 1)
@@ -112,7 +117,34 @@ namespace DriverAssist.Models
                             res.LightIntensity.Add(result.LightIntensity[(int)i]);
                         }
                     }
-                    return res;
+                    return result;
+                }
+            }
+
+            return new PassageData();
+        }
+
+        public PassageData UpdateSensorData(string authToken, string passageGuid, long start, long end, bool delete)
+        {
+            if (authToken != null)
+            {
+                var pkg = new UpdateStatistic
+                {
+                    Token = authToken,
+                    PassageGuid = passageGuid,
+                    Delete = delete,
+                    StartTimestamp = start,
+                    EndTimestamp = end
+                };
+                var httpClient = new HttpClient {Timeout = new TimeSpan(0, 0, 10, 0)};
+                var json = JsonConvert.SerializeObject(pkg);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var httpResponseMessage = httpClient.PostAsync(PPConfig.EndPointAdress + "updatestat", httpContent).Result;
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                    var result = JsonConvert.DeserializeObject<PassageData>(contents);
+                    return result;
                 }
             }
 

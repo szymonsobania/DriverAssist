@@ -150,12 +150,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\UserProfileController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Models\Coordinate.cs" />
+    <Compile Include="Models\Interwalies.cs" />
     <Compile Include="Models\PassageModel.cs" />
     <Compile Include="Models\UserAccount.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -234,6 +236,7 @@
     <Content Include="Views\Home\Statistics.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\UserProfile\Index.cshtml" />
+    <Content Include="Views\Settings\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

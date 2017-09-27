@@ -55,5 +55,12 @@ namespace AuthWebApi.Services
             }
             return new Response() {Result = "OK"};
         }
+
+        public Response CheckAdmin(string tokenToken)
+        {
+            if (GetUser(tokenToken).administrator)
+                return new Response() {Result = "OK"};
+            return new Response() { Result = "Failed" };
+        }
     }
 }

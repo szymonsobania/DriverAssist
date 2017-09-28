@@ -234,6 +234,7 @@
     <Compile Include="Models\Reading.cs" />
     <Compile Include="Models\RegisterUser.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\UpdateStatistic.cs" />
     <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Pojazdy.cs">
       <DependentUpon>Model1.tt</DependentUpon>

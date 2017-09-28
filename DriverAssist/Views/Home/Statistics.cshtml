@@ -214,22 +214,37 @@
     };
 
     function updateChart() {
+        var startpos =0;
+        var endpos;
         var rangeLength = 0;
         for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
             if ((sensorData.getValue(i, 0) >= rangeFilter.getState().range.start) && (sensorData.getValue(i, 0) <= rangeFilter.getState().range.end)) {
+                if (rangeLength == 0) {
+                    startpos = i;
+                }
                 rangeLength++;
             }
         }
         //alert("zanzaczony obszar:" + rangeLength);
         var modulo = Math.ceil(rangeLength / 500);
+        var moduloOut = Math.ceil(sensorData.getNumberOfRows() /1000);
+        endpos = startpos + rangeLength;
         var visibleRows = [];
-        for (var i = 0; i < sensorData.getNumberOfRows(); i++) {
+
+        for (var i = 0; i < startpos; i++) {
+            if (i % moduloOut == 0)
+                visibleRows.push(i);
+        }
+        for (var i = startpos; i < endpos; i++) {
             if (i % modulo == 0)
+                visibleRows.push(i);
+        }
+        for (var i = endpos; i < sensorData.getNumberOfRows(); i++) {
+            if (i % moduloOut == 0)
                 visibleRows.push(i);
         }
         view.setRows(visibleRows);
         dash.draw(view);
-        //alert(sensorData.getNumberOfRows());
     };
 
     function changeRange() {

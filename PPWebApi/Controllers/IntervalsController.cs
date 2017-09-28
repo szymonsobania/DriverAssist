@@ -19,11 +19,18 @@ namespace AuthWebApi.Controllers
             intervalsRepository = new IntervalsRepository();
         }
 
-        //[Route("intervals")]
-        //[HttpGet]
-        //public List<Interwaly> GetIntervals(string token)
-        //{
-          // return intervalsRepository.GetAllInterwals();
-        //}
+        [Route("intervals")]
+        [HttpGet]
+        public List<Interwaly> GetIntervals(string token)
+        {
+            return intervalsRepository.GetAllInterwals();
+        }
+
+        [Route("intervals")]
+        [HttpPost]
+        public Response UpdateInterwalies(List<Interwaly> interwaly)
+        {
+            return intervalsRepository.UpdateInterwalies(interwaly);
+        }
     }
 }

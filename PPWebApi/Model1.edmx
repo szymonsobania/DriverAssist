@@ -5,16 +5,12 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="PP_testModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'PP_test.dbo.Interwaly' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Interwaly">
           <Key>
             <PropertyRef Name="id" />
-            <PropertyRef Name="nazwa" />
-            <PropertyRef Name="wartosc" />
           </Key>
-          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nazwa" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nazwa" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="wartosc" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Pojazdy">
@@ -127,17 +123,11 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="PP_testModelStoreContainer">
+          <EntitySet Name="Interwaly" EntityType="Self.Interwaly" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pojazdy" EntityType="Self.Pojazdy" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Przejazdy_fs" EntityType="Self.Przejazdy_fs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tagi" EntityType="Self.Tagi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Uzytkownicy" EntityType="Self.Uzytkownicy" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Interwaly" EntityType="Self.Interwaly" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Interwaly].[id] AS [id], 
-    [Interwaly].[nazwa] AS [nazwa], 
-    [Interwaly].[wartosc] AS [wartosc]
-    FROM [dbo].[Interwaly] AS [Interwaly]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="Przydzialy" EntityType="Self.Przydzialy" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Przydzialy].[id_uzytk] AS [id_uzytk], 
@@ -282,11 +272,9 @@ warning 6002: The table/view 'PP_test.dbo.Przydzialy' does not have a primary ke
         <EntityType Name="Interwaly">
           <Key>
             <PropertyRef Name="id" />
-            <PropertyRef Name="nazwa" />
-            <PropertyRef Name="wartosc" />
           </Key>
-          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nazwa" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nazwa" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="wartosc" Type="Int32" Nullable="false" />
         </EntityType>
       </Schema>

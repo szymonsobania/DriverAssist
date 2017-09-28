@@ -31,5 +31,12 @@ namespace AuthWebApi.Controllers
         {
             return userRepository.UpdateUser(user);
         }
+
+        [Route("checkadmin")]
+        [HttpPost]
+        public Response CheckAdmin(GetUserToken token)
+        {
+            return userRepository.CheckAdmin(token.token);
+        }
     }
 }

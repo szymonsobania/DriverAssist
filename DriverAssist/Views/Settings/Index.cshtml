@@ -1,0 +1,32 @@
+﻿@model DriverAssist.Models.Interwalies
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-5 col-md-3">
+            <div class="form-login">
+                @if (Session["saved"] != null)
+                {
+                    <p>@Session["saved"]</p>
+                }
+                @using (Html.BeginForm("Save", "Settings", FormMethod.Post))
+                {
+                    @Html.TextBox("AccelerometerIntervalLength", null, new {@class = "form-control input-sm chat-input", placeholder = "AccelerometerIntervalLength"})
+                    @Html.TextBox("GpsIntervalLength", null, new {@class = "form-control input-sm chat-input", placeholder = "GpsIntervalLength"})
+                    @Html.TextBox("GyroscopeIntervalLength", null, new {@class = "form-control input-sm chat-input", placeholder = "GyroscopeIntervalLength"})
+                    @Html.TextBox("MagneticIntervalLength", null, new {@class = "form-control input-sm chat-input", placeholder = "MagneticIntervalLength"})
+                    <div class="wrapper">
+                        <span class="group-btn">
+                            <input type="submit" class="btn btn-primary btn-md" value="Save"/>
+                        </span>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -36,7 +36,7 @@ namespace AuthWebApi.Services
             return builder.ToString();
         }
 
-        private void AddTagsToRide(SQLiteConnection con, PP_testEntities context, Przejazdy_fs przejazd)
+        public void AddTagsToRide(SQLiteConnection con, PP_testEntities context, Przejazdy_fs przejazd)
         {
             long time = 0;
             double vmax = 0;
@@ -184,7 +184,7 @@ namespace AuthWebApi.Services
                                 foreach (var id in ridesIds)
                                 {
                                     string fname = DateTime.Now.ToString("yyyyMMddHHmmtt") + RandomString(5);
-                                    string path = Path.Combine(Path.GetTempPath(), fileName);
+                                    string path = Path.Combine(Path.GetTempPath(), fname);
                                     File.WriteAllBytes(path, file);
                                     var przejazd = new Przejazdy_fs();
                                     using (SQLiteConnection con2 = new SQLiteConnection("Data Source=" + path))

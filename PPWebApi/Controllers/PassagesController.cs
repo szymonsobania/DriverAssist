@@ -30,5 +30,14 @@ namespace AuthWebApi.Controllers
         {
             return repository.GetStatistic(pkg.token, pkg.passage_guid);
         }
+
+        [Route("updatestat")]
+        [HttpPost]
+        public PassageData UpdateStatistic(UpdateStatistic stat)
+        {
+            if (stat.Delete)
+                return repository.DeletePassageData(stat);
+            return repository.SplitPassageData(stat);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using AuthWebApi.Models;
 
 namespace DriverAssist.Controllers
 {
@@ -39,6 +40,7 @@ namespace DriverAssist.Controllers
         public ActionResult Passages()
         {
             ViewBag.Message = "Lista przejazdów";
+            Session["passageGuid"] = null;
 
             var table = PassageTable.GetPassageTable(Session["token"]?.ToString());
 
@@ -48,6 +50,7 @@ namespace DriverAssist.Controllers
         public ActionResult Statistics(string passageId)
         {
             ViewBag.Message = "Dane przejazdu";
+            Session["passageGuid"] = passageId;
 
             return View(model.GetCoordinates(Session["token"]?.ToString(), passageId));
         }
@@ -58,12 +61,28 @@ namespace DriverAssist.Controllers
             public string end { set; get; }
         }
 
-        public ActionResult SelectedData(Zakres zakres)
-        {
-            var response = "Zwracam dane od " + zakres.start + " do " + zakres.end;
+        //public ActionResult SelectedData(Zakres zakres)
+        //{
+        //    var response = "Zwracam dane od " + zakres.start + " do " + zakres.end;
 
-            //Zwroc dane tak aby w zakresie start end było 500 rekordow, a poza tym zakresem 100 (rowno rozmieszczone)
-            return Json(response);
+        //    //Zwroc dane tak aby w zakresie start end było 500 rekordow, a poza tym zakresem 100 (rowno rozmieszczone)
+        //    return Json(model.UpdateSensorData(long.Parse(zakres.start), long.Parse(zakres.end)));
+        //}
+
+        [HttpPost]
+        public ActionResult Delete(Zakres zakres)
+        {
+            model.UpdateSensorData(Session["token"]?.ToString(), Session["passageGuid"]?.ToString(), long.Parse(zakres.start),
+                long.Parse(zakres.end), true);
+            return Json("OK");
+        }
+
+        [HttpPost]
+        public ActionResult Split(Zakres zakres)
+        {
+            model.UpdateSensorData(Session["token"]?.ToString(), Session["passageGuid"]?.ToString(), long.Parse(zakres.start),
+                long.Parse(zakres.end), false);
+            return Json("OK");
         }
     }
 }

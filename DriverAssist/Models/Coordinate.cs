@@ -7,7 +7,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
+using Antlr.Runtime.Tree;
 using AuthWebApi.Models;
+using DriverAssist.Controllers;
 using Newtonsoft.Json;
 
 namespace DriverAssist.Models
@@ -29,6 +31,8 @@ namespace DriverAssist.Models
     {
         //public List<Coordinate> Coordinates { get; set; }
 
+        private PassageData _sensors = new PassageData();
+
         public PassageData GetCoordinates(string authToken, string passageGuid)
         {
             if (authToken != null)
@@ -42,19 +46,107 @@ namespace DriverAssist.Models
                 {
                     string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
                     var result = JsonConvert.DeserializeObject<PassageData>(contents);
-                    int step = result.LocationTimestamp.Count / 500;
-                    var res = new PassageData();
-                    for (int i = 0; i < result.LocationTimestamp.Count; i += step)
-                    {
-                        res.LocationTimestamp.Add(result.LocationTimestamp[i]);
-                        res.LocationLat.Add(result.LocationLat[i]);
-                        res.LocationLng.Add(result.LocationLng[i]);
-                    }
-                    return res;
+                    _sensors = result;
+                    //var res = new PassageData();
+                    //double step = result.LocationTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.LocationTimestamp = result.LocationTimestamp;
+                    //    res.LocationLat = result.LocationLat;
+                    //    res.LocationLng = result.LocationLng;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.LocationTimestamp.Count; i += step)
+                    //    {
+                    //        res.LocationTimestamp.Add(result.LocationTimestamp[(int)i]);
+                    //        res.LocationLat.Add(result.LocationLat[(int)i]);
+                    //        res.LocationLng.Add(result.LocationLng[(int)i]);
+                    //    }
+                    //}
+                    
+                    //step = result.AccTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.AccTimestamp = result.AccTimestamp;
+                    //    res.AccX = result.AccX;
+                    //    res.AccY = result.AccY;
+                    //    res.AccZ = result.AccZ;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.AccTimestamp.Count; i += step)
+                    //    {
+                    //        res.AccTimestamp.Add(result.AccTimestamp[(int)i]);
+                    //        res.AccX.Add(result.AccX[(int)i]);
+                    //        res.AccY.Add(result.AccY[(int)i]);
+                    //        res.AccZ.Add(result.AccZ[(int)i]);
+                    //    }
+                    //}
+
+                    //step = result.GyroTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.GyroTimestamp = result.GyroTimestamp;
+                    //    res.GyroX = result.GyroX;
+                    //    res.GyroY = result.GyroY;
+                    //    res.GyroZ = result.GyroZ;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.GyroTimestamp.Count; i += step)
+                    //    {
+                    //        res.GyroTimestamp.Add(result.GyroTimestamp[(int)i]);
+                    //        res.GyroX.Add(result.GyroX[(int)i]);
+                    //        res.GyroY.Add(result.GyroY[(int)i]);
+                    //        res.GyroZ.Add(result.GyroZ[(int)i]);
+                    //    }
+                    //}
+
+                    //step = result.LightTimestamp.Count / 500.0;
+                    //if (step <= 1)
+                    //{
+                    //    res.LightTimestamp = result.LightTimestamp;
+                    //    res.LightIntensity = result.LightIntensity;
+                    //}
+                    //else
+                    //{
+                    //    for (double i = 0; i < result.LightTimestamp.Count; i += step)
+                    //    {
+                    //        res.LightTimestamp.Add(result.LightTimestamp[(int)i]);
+                    //        res.LightIntensity.Add(result.LightIntensity[(int)i]);
+                    //    }
+                    //}
+                    return result;
                 }
             }
 
             return new PassageData();
+        }
+
+        public void UpdateSensorData(string authToken, string passageGuid, long start, long end, bool delete)
+        {
+            if (authToken != null)
+            {
+                var pkg = new UpdateStatistic
+                {
+                    Token = authToken,
+                    PassageGuid = passageGuid,
+                    Delete = delete,
+                    StartTimestamp = start,
+                    EndTimestamp = end
+                };
+                var httpClient = new HttpClient {Timeout = new TimeSpan(0, 0, 10, 0)};
+                var json = JsonConvert.SerializeObject(pkg);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var httpResponseMessage = httpClient.PostAsync(PPConfig.EndPointAdress + "updatestat", httpContent).Result;
+                //if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                //{
+                //    string contents = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                //    var result = JsonConvert.DeserializeObject<PassageData>(contents);
+                //    return result;
+                //}
+            }
         }
 
         public Model()

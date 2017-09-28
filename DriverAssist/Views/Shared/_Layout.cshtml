@@ -44,27 +44,30 @@
                             <p>Home</p>
                         </a>
                     </li>
+                    @if (Session["user"] != null)
+                    {
+                        <li>
+                            <a href="@Url.Action("Passages", "Home")">
+                                <i class="pe-7s-graph1"></i>
+                                <p>Passages</p>
 
-                    <li>                        
-                        <a href="@Url.Action("Passages", "Home")">
-                            <i class="pe-7s-graph1"></i>
-                            <p>Passages</p>
+                            </a>
+                        </li>
 
-                        </a>
-                    </li>
-                  
-                    <li>
-                        <a href="@Url.Action("UserProfile", "Home")">
-                            <i class="pe-7s-user"></i>
-                            <p>User Profile</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="pe-7s-power"></i>
-                            <p>Log out</p>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="@Url.Action("Index", "UserProfile")">
+                                <i class="pe-7s-user"></i>
+                                <p>User Profile</p>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("Logout", "Login")">
+                                <i class="pe-7s-power"></i>
+                                <p>Log out</p>
+                            </a>
+                        </li>
+                    }
                     <li style="visibility:hidden;">
                         <a href="@Url.Action("AdminPanel", "Home")">
                             <i class="pe-7s-user"></i>
@@ -110,7 +113,10 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a href="@Url.Action("Index", "UserProfile")">Mój Profil</a></li>
-                                        <li><a href="user.html">Ustawienia</a></li>
+                                        @if (Session["admin"] == "Y")
+                                        {
+                                            <li><a href="@Url.Action("Index", "Settings")">Ustawienia</a></li>
+                                        }
                                         <li class="divider"></li>
                                         <li><a href="#">Wyloguj się</a></li>
                                     </ul>

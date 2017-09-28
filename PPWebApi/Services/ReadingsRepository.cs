@@ -59,47 +59,51 @@ namespace AuthWebApi.Services
             string ord = "SELECT * FROM location_data ORDER BY TIMESTAMP";
 
             double sec;
-            double minutes;
-            double speed;
-            double seconds;
+            double minutes = 0.0;
+            double speed = 0.0;
+            double seconds = 0.0;
             double sum = 0.0;
             using (SQLiteCommand cmd = new SQLiteCommand(ord, con))
             {
                 using (SQLiteDataReader rdr = cmd.ExecuteReader())
                 {
-                    rdr.Read();
-                    lastTimestamp = rdr.GetInt64(1);
-                    lastLatitude = Degrees2Radius(rdr.GetDouble(2));
-                    lastLongitude = Degrees2Radius(rdr.GetDouble(3));
-                    
-                    while (rdr.Read())
+                    if (rdr.HasRows)
                     {
-                        long timestamp = rdr.GetInt32(1);
-                        double latitude = Degrees2Radius(rdr.GetDouble(2));
-                        double longitude = Degrees2Radius(rdr.GetDouble(3));
-                        long diffTime = timestamp - lastTimestamp;
-                        double diffLat = latitude - lastLatitude;
-                        double diffLng = longitude - lastLongitude;
+                        rdr.Read();
+                        lastTimestamp = rdr.GetInt64(1);
+                        lastLatitude = Degrees2Radius(rdr.GetDouble(2));
+                        lastLongitude = Degrees2Radius(rdr.GetDouble(3));
 
-                        lastTimestamp = timestamp;
-                        lastLatitude = latitude;
-                        lastLongitude = longitude;
+                        while (rdr.Read())
+                        {
+                            long timestamp = rdr.GetInt32(1);
+                            double latitude = Degrees2Radius(rdr.GetDouble(2));
+                            double longitude = Degrees2Radius(rdr.GetDouble(3));
+                            long diffTime = timestamp - lastTimestamp;
+                            double diffLat = latitude - lastLatitude;
+                            double diffLng = longitude - lastLongitude;
 
-                        double a = Math.Pow(Math.Sin(diffLat / 2), 2) + Math.Cos(lastLatitude) * Math.Cos(latitude) * Math.Pow(Math.Sin(diffLng / 2), 2);
-                        double b = 2 * Math.Asin(Math.Sqrt(a));
-                        double dist = Math.Round(EarthRadiusInMeters * b, 2);
-                        double v = (dist / 1000) / ((double)diffTime / 1000 / 60 / 60);
-                        if (v > vmax)
-                            vmax = v;
-                        //Console.WriteLine(string.Format("{0}m - {1:0.00} km/h - {2}ms", dist, v, diffTime));
-                        sum += dist;
+                            lastTimestamp = timestamp;
+                            lastLatitude = latitude;
+                            lastLongitude = longitude;
+
+                            double a = Math.Pow(Math.Sin(diffLat / 2), 2) +
+                                       Math.Cos(lastLatitude) * Math.Cos(latitude) * Math.Pow(Math.Sin(diffLng / 2), 2);
+                            double b = 2 * Math.Asin(Math.Sqrt(a));
+                            double dist = Math.Round(EarthRadiusInMeters * b, 2);
+                            double v = (dist / 1000) / ((double) diffTime / 1000 / 60 / 60);
+                            if (v > vmax)
+                                vmax = v;
+                            //Console.WriteLine(string.Format("{0}m - {1:0.00} km/h - {2}ms", dist, v, diffTime));
+                            sum += dist;
+                        }
+                        sec = (double) time / 1000;
+                        minutes = sec / 60;
+                        speed = (sum / 1000) / (minutes / 60);
+                        seconds = (minutes - (int) minutes) * 60;
+                        //Console.WriteLine(string.Format("Distance: {0:0.000}km, Time: {1:0}h {2}min {3:0}s, Avg speed: {4:0.00}km/h, Max speed: {5:0.00}km/h",
+                        //    (sum / 1000), (int)(minutes / 60), (int)minutes, seconds, speed, vmax));
                     }
-                    sec = (double)time / 1000;
-                    minutes = sec / 60;
-                    speed = (sum / 1000) / (minutes / 60);
-                    seconds = (minutes - (int)minutes) * 60;
-                    //Console.WriteLine(string.Format("Distance: {0:0.000}km, Time: {1:0}h {2}min {3:0}s, Avg speed: {4:0.00}km/h, Max speed: {5:0.00}km/h",
-                    //    (sum / 1000), (int)(minutes / 60), (int)minutes, seconds, speed, vmax));
                 }
             }
             var tagVMax = new Tagi();

@@ -21,5 +21,24 @@ namespace AuthWebApi.Services
                 return list;
             }
         }
+
+        public Response UpdateInterwalies(List<Interwaly> interwaly)
+        {
+            using (PP_testEntities context = new PP_testEntities())
+            {
+                var rows = from o in context.Interwalies
+                           select o;
+                foreach (var row in rows)
+                {
+                    context.Interwalies.Remove(row);
+                }
+                foreach (var i in interwaly)
+                {
+                    context.Interwalies.Add(i);
+                }
+                context.SaveChanges();
+            }
+            return new Response() {Result = "OK"};
+        }
     }
 }

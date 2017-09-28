@@ -14,7 +14,7 @@ namespace AuthWebApi
     
     public partial class Interwaly
     {
-        public long id { get; set; }
+        public int id { get; set; }
         public string nazwa { get; set; }
         public int wartosc { get; set; }
     }

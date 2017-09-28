@@ -179,6 +179,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\Pe-icon-7-stroke.svg" />
     <Content Include="Global.asax" />
+    <Content Include="img\avatar.png" />
+    <Content Include="img\avatar2.png" />
     <Content Include="img\background-profile.jpg" />
     <Content Include="img\gliwice_kato.txt" />
     <Content Include="img\rafal.jpg" />
